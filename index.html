@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParchApp - Descubre Antioquia</title>
+    <style>
+        :root {
+            --color-primary: #233d00;
+            --color-secondary: #457a00;
+            --color-accent: #e4ffc2;
+            --color-dark: #202e1a;
+            --color-light: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f9f9f9;
+            color: var(--color-dark);
+            line-height: 1.6;
+        }
+        
+        /* Header */
+        header {
+            background-color: var(--color-primary);
+            color: var(--color-light);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+        
+        .logo span {
+            color: var(--color-accent);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: var(--color-light);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--color-accent);
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-login {
+            background-color: transparent;
+            color: var(--color-light);
+            border: 1px solid var(--color-light);
+        }
+        
+        .btn-register {
+            background-color: var(--color-secondary);
+            color: var(--color-light);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(32, 46, 26, 0.7), rgba(32, 46, 26, 0.7)), 
+                        url('https://images.unsplash.com/photo-1580234811497-9df7fd2f357e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
+            color: var(--color-light);
+            padding: 5rem 2rem;
+            text-align: center;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .search-container {
+            display: flex;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 4px 0 0 4px;
+            font-size: 1rem;
+        }
+        
+        .search-btn {
+            background-color: var(--color-secondary);
+            color: var(--color-light);
+            border: none;
+            padding: 0 1.5rem;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+        
+        /* Destinations Section */
+        .destinations {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--color-primary);
+            font-size: 2rem;
+        }
+        
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            background-color: var(--color-light);
+            color: var(--color-dark);
+            border: 1px solid #ddd;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn.active {
+            background-color: var(--color-secondary);
+            color: var(--color-light);
+        }
+        
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .card {
+            background-color: var(--color-light);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .card-content {
+            padding: 1.5rem;
+        }
+        
+        .card-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--color-primary);
+        }
+        
+        .card-description {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-price {
+            font-weight: bold;
+            color: var(--color-secondary);
+        }
+        
+        .card-btn {
+            background-color: var(--color-primary);
+            color: var(--color-light);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .card-btn:hover {
+            background-color: var(--color-secondary);
+        }
+        
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+        
+        .page-btn {
+            background-color: var(--color-light);
+            border: 1px solid #ddd;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .page-btn.active {
+            background-color: var(--color-secondary);
+            color: var(--color-light);
+            border-color: var(--color-secondary);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--color-dark);
+            color: var(--color-light);
+            padding: 3rem 2rem 1rem;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: var(--color-accent);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--color-accent);
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #444;
+            color: #aaa;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .cards-container {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero {
+                padding: 3rem 1rem;
+            }
+            
+            .destinations {
+                padding: 2rem 1rem;
+            }
+            
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-container {
+                flex-direction: column;
+            }
+            
+            .search-input {
+                border-radius: 4px;
+                margin-bottom: 0.5rem;
+            }
+            
+            .search-btn {
+                border-radius: 4px;
+                padding: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">Parch<span>App</span></div>
+            <ul class="nav-links">
+                <li><a href="#">Inicio</a></li>
+                <li><a href="#">Destinos</a></li>
+                <li><a href="#">Experiencias</a></li>
+                <li><a href="#">Contacto</a></li>
+            </ul>
+            <div class="auth-buttons">
+                <button class="btn btn-login">Iniciar Sesión</button>
+                <button class="btn btn-register">Registrarse</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Descubre las Maravillas de Antioquia</h1>
+            <p>Explora los diversos paisajes y la vibrante cultura de Antioquia, Colombia.</p>
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Buscar destinos...">
+                <button class="search-btn">Buscar</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Destinations Section -->
+    <section class="destinations">
+        <h2 class="section-title">Destinos Populares</h2>
+        
+        <div class="filters">
+            <button class="filter-btn active">Todos</button>
+            <button class="filter-btn">Naturaleza</button>
+            <button class="filter-btn">Ciudad</button>
+            <button class="filter-btn">Cultura</button>
+            <button class="filter-btn">Aventura</button>
+        </div>
+        
+        <div class="cards-container" id="cardsContainer">
+            <!-- Cards will be dynamically generated here -->
+        </div>
+        
+        <div class="pagination" id="pagination">
+            <!-- Pagination will be dynamically generated here -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ParchApp</h3>
+                <p>Descubre las maravillas de Antioquia con nuestras experiencias únicas y tours personalizados.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Enlaces Rápidos</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Inicio</a></li>
+                    <li><a href="#">Destinos</a></li>
+                    <li><a href="#">Experiencias</a></li>
+                    <li><a href="#">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Legal</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Términos y Condiciones</a></li>
+                    <li><a href="#">Política de Privacidad</a></li>
+                    <li><a href="#">Cookies</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contacto</h3>
+                <ul class="footer-links">
+                    <li>Email: info@parchapp.com</li>
+                    <li>Teléfono: +57 300 123 4567</li>
+                    <li>Medellín, Antioquia</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2023 ParchApp. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Sample data for destinations
+        const destinations = [
+            {
+                id: 1,
+                name: "Guatapé",
+                description: "Conocido por su impresionante Peñol y sus coloridas casas, Guatapé ofrece paisajes únicos y actividades acuáticas.",
+                image: "https://images.unsplash.com/photo-1595871800795-6cd462dfd67c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                price: "$120.000",
+                category: "naturaleza"
+            },
+            {
+                id: 2,
+                name: "Jardín",
+                description: "Un pueblo mágico con arquitectura colonial, cascadas y cafetales. Perfecto para los amantes de la naturaleza.",
+                image: "https://images.unsplash.com/photo-1595871800795-6cd462dfd67c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                price: "$150.000",
+                category: "naturaleza"
+            },
+            {
+                id: 3,
+                name: "Santa Fe de Antioquia",
+                description: "Ciudad histórica con arquitectura colonial bien conservada y puentes emblemáticos sobre el río Cauca.",
+                image: "https://images.unsplash.com/photo-1595871800795-6cd462dfd67c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                price: "$100.000",
+                category: "cultura"
+            },
+            {
+                id: 4,
+                name: "Medellín",
+                description: "La vibrante capital de Antioquia, conocida por su innovación, cultura y hermosos paisajes urbanos.",
+                image: "https://images.unsplash.com/photo-1595871800795-6cd462dfd67c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                price: "$90.000",
+                category: "ciudad"
+            },
+            {
+                id: 5,
+                name: "Parque Arví",
+                description: "Reserva natural con senderos ecológicos, actividades al aire libre y una vista panorámica de Medellín.",
+                image: "https://images.unsplash.com/photo-1595871800795-6cd462dfd67c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                price: "$80.000",
+                category: "naturaleza"
+            },
+            {
+                id: 6,
+                name: "Río Claro",
+                description: "Paraíso natural con ríos de aguas cristalinas, cuevas de mármol y exuberante vegetación.",
+                image: "https://images.unsplash.com/photo-1595871800795-6cd462dfd67c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                price: "$180.000",
+                category: "aventura"
+            },
+            {
+                id: 7,
+                name: "San Jerónimo",
+                description: "Pueblo tranquilo ideal para descansar, con fincas cafeteras y paisajes rurales encantadores.",
+                image: "https://images.unsplash.com/photo-1595871800795-6cd462dfd67c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                price: "$110.000",
+                category: "naturaleza"
+            },
+            {
+                id: 8,
+                name: "Cerro Tusa",
+                description: "Una pirámide natural perfecta para el senderismo y disfrutar de vistas espectaculares.",
+                image: "https://images.unsplash.com/photo-1595871800795-6cd462dfd67c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+                price: "$70.000",
+                category: "aventura"
+            }
+        ];
+
+        // Pagination variables
+        const cardsPerPage = 6;
+        let currentPage = 1;
+        let filteredDestinations = [...destinations];
+
+        // DOM elements
+        const cardsContainer = document.getElementById('cardsContainer');
+        const paginationContainer = document.getElementById('pagination');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+
+        // Function to display cards for current page
+        function displayCards() {
+            cardsContainer.innerHTML = '';
+            
+            const startIndex = (currentPage - 1) * cardsPerPage;
+            const endIndex = startIndex + cardsPerPage;
+            const cardsToShow = filteredDestinations.slice(startIndex, endIndex);
+            
+            cardsToShow.forEach(destination => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <img src="${destination.image}" alt="${destination.name}" class="card-img">
+                    <div class="card-content">
+                        <h3 class="card-title">${destination.name}</h3>
+                        <p class="card-description">${destination.description}</p>
+                        <div class="card-footer">
+                            <span class="card-price">Desde ${destination.price}</span>
+                            <button class="card-btn">Ver Tour</button>
+                        </div>
+                    </div>
+                `;
+                cardsContainer.appendChild(card);
+            });
+            
+            updatePagination();
+        }
+
+        // Function to update pagination buttons
+        function updatePagination() {
+            paginationContainer.innerHTML = '';
+            
+            const totalPages = Math.ceil(filteredDestinations.length / cardsPerPage);
+            
+            // Previous button
+            if (currentPage > 1) {
+                const prevBtn = document.createElement('button');
+                prevBtn.className = 'page-btn';
+                prevBtn.textContent = 'Anterior';
+                prevBtn.addEventListener('click', () => {
+                    currentPage--;
+                    displayCards();
+                });
+                paginationContainer.appendChild(prevBtn);
+            }
+            
+            // Page buttons
+            for (let i = 1; i <= totalPages; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+                pageBtn.textContent = i;
+                pageBtn.addEventListener('click', () => {
+                    currentPage = i;
+                    displayCards();
+                });
+                paginationContainer.appendChild(pageBtn);
+            }
+            
+            // Next button
+            if (currentPage < totalPages) {
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'page-btn';
+                nextBtn.textContent = 'Siguiente';
+                nextBtn.addEventListener('click', () => {
+                    currentPage++;
+                    displayCards();
+                });
+                paginationContainer.appendChild(nextBtn);
+            }
+        }
+
+        // Filter functionality
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                button.classList.add('active');
+                
+                const filter = button.textContent.toLowerCase();
+                
+                if (filter === 'todos') {
+                    filteredDestinations = [...destinations];
+                } else {
+                    filteredDestinations = destinations.filter(dest => 
+                        dest.category === filter
+                    );
+                }
+                
+                currentPage = 1;
+                displayCards();
+            });
+        });
+
+        // Search functionality
+        const searchInput = document.querySelector('.search-input');
+        const searchBtn = document.querySelector('.search-btn');
+        
+        function performSearch() {
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            if (searchTerm) {
+                filteredDestinations = destinations.filter(dest => 
+                    dest.name.toLowerCase().includes(searchTerm) || 
+                    dest.description.toLowerCase().includes(searchTerm)
+                );
+            } else {
+                filteredDestinations = [...destinations];
+            }
+            
+            currentPage = 1;
+            displayCards();
+        }
+        
+        searchBtn.addEventListener('click', performSearch);
+        searchInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        // Initialize the page
+        displayCards();
+    </script>
+</body>
+</html>
