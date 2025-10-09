@@ -616,6 +616,12 @@
                 <div class="carousel-item">
                     <img src="https://visitarmedellin.com/wp-content/uploads/2024/05/Jardin-Antioquia.jpg" alt="Jardín">
                 </div>
+                <div class="carousel-item">
+                    <img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0b/e1/62/76/rio-claro.jpg?w=1200&h=-1&s=1" alt="Cañón del rio Claro">
+                </div>
+                <div class="carousel-item">
+                    <img src="https://patrimonioypaisaje.madrid.es/FWProjects/monumenta/Edificios/90002/03.05-img%201.jpg" alt="El Retiro">
+                </div>
             </div>
             <button class="carousel-control prev">&#10094;</button>
             <button class="carousel-control next">&#10095;</button>
@@ -623,12 +629,14 @@
                 <span class="indicator active" data-slide="0"></span>
                 <span class="indicator" data-slide="1"></span>
                 <span class="indicator" data-slide="2"></span>
+                <span class="indicator" data-slide="3"></span>
+                <span class="indicator" data-slide="4"></span>
             </div>
         </div>
         
         <div class="hero-content">
-            <h1>Descubre las Maravillas de Antioquia</h1>
-            <p>Explora los diversos paisajes y la vibrante cultura de Antioquia, Colombia.</p>
+            <h1 id="hero-title">Descubre las Maravillas de Antioquia</h1>
+            <p id="hero-description">Explora los diversos paisajes y la vibrante cultura de Antioquia, Colombia.</p>
             <div class="search-container">
                 <input type="text" class="search-input" placeholder="Buscar destinos...">
                 <button class="search-btn">Buscar</button>
@@ -780,6 +788,130 @@
             }
         ];
 
+        // Planes dentro del carrusel
+
+        const heroContent = [
+        {
+            title: "Descubre las Maravillas de Antioquia",
+            description: "Explora los diversos paisajes y la vibrante cultura de Antioquia, Colombia."
+        },
+        {
+            title: "Explora el Majestuoso Guatapé",
+            description: "Disfruta de la Piedra del Peñol y los coloridos paisajes de este destino único.",
+        },
+        {
+            title: "Descubre el Encanto de Jardín",
+            description: "Sumérgete en la magia de este pueblo cafetero y sus cascadas espectaculares.",
+            
+        },
+        {
+            title : "Cañón del Río Claro: Selva, Mármol y Agua Cristalina",
+            description: "Escápate al Magdalena Medio y explora esta reserva natural única."
+        },
+        {
+            title: "El Retiro: Elegancia, Madera y Paisajes Florale",
+            description: "Visita este hermoso municipio reconocido por su arquitectura en madera y la fabricación de muebles."
+        }
+    ];
+
+        //funcion para actualizar el contenido
+        function updateHeroContent(slideIndex) {
+        const content = heroContent[slideIndex];
+        const titleElement = document.getElementById('hero-title');
+        const descriptionElement = document.getElementById('hero-description');
+        
+            if (titleElement && descriptionElement) {
+                // Animación de fade out
+                titleElement.style.opacity = '0';
+                descriptionElement.style.opacity = '0';
+                
+                setTimeout(() => {
+                    // Cambiar contenido
+                    titleElement.textContent = content.title;
+                    descriptionElement.textContent = content.description;
+                    
+                    // Animación de fade in
+                    titleElement.style.opacity = '1';
+                    descriptionElement.style.opacity = '1';
+                }, 300);
+            }
+        }
+
+        // Función para inicializar el carrusel con contenido dinámico
+        function initCarouselWithContent() {
+            const carouselItems = document.querySelectorAll('.carousel-item');
+            const indicators = document.querySelectorAll('.indicator');
+            const prevBtn = document.querySelector('.carousel-control.prev');
+            const nextBtn = document.querySelector('.carousel-control.next');
+            
+            let currentSlide = 0;
+            const totalSlides = carouselItems.length;
+            
+            // Función para cambiar slide
+            function goToSlide(slideIndex) {
+                // Remover clase active de todos los items e indicadores
+                carouselItems.forEach(item => item.classList.remove('active'));
+                indicators.forEach(indicator => indicator.classList.remove('active'));
+                
+                // Añadir clase active al slide e indicador actual
+                carouselItems[slideIndex].classList.add('active');
+                indicators[slideIndex].classList.add('active');
+                
+                // Actualizar contenido del hero
+                updateHeroContent(slideIndex);
+                
+                currentSlide = slideIndex;
+            }
+            
+            // Event listeners para los indicadores
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', () => {
+                    goToSlide(index);
+                });
+            });
+            
+            // Event listeners para botones de navegación
+            prevBtn.addEventListener('click', () => {
+                let prevSlide = currentSlide - 1;
+                if (prevSlide < 0) prevSlide = totalSlides - 1;
+                goToSlide(prevSlide);
+            });
+            
+            nextBtn.addEventListener('click', () => {
+                let nextSlide = currentSlide + 1;
+                if (nextSlide >= totalSlides) nextSlide = 0;
+                goToSlide(nextSlide);
+            });
+            
+            // Auto-slide cada 6 segundos
+            let slideInterval = setInterval(() => {
+                let nextSlide = currentSlide + 1;
+                if (nextSlide >= totalSlides) nextSlide = 0;
+                goToSlide(nextSlide);
+            }, 6000);
+            
+            // Pausar auto-slide al hacer hover
+            const carousel = document.querySelector('.carousel');
+            carousel.addEventListener('mouseenter', () => {
+                clearInterval(slideInterval);
+            });
+            
+            carousel.addEventListener('mouseleave', () => {
+                slideInterval = setInterval(() => {
+                    let nextSlide = currentSlide + 1;
+                    if (nextSlide >= totalSlides) nextSlide = 0;
+                    goToSlide(nextSlide);
+                }, 6000);
+            });
+            
+            // Inicializar con el primer slide
+            updateHeroContent(0);
+        }
+
+        // Inicializar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', initCarouselWithContent);
+
+
         // Carrusel functionality
         function initCarousel() {
             const carouselItems = document.querySelectorAll('.carousel-item');
@@ -810,7 +942,7 @@
             }
 
             function startAutoSlide() {
-                slideInterval = setInterval(nextSlide, 5000);
+                slideInterval = setInterval(nextSlide, 10000);
             }
 
             function stopAutoSlide() {
