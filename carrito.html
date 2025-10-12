@@ -931,13 +931,8 @@
                return;
            }
        
-           // Simular proceso de pago
-           showAlert('Redirigiendo a PSE para el pago...', 'success');
-
-           // Redirección a PSE
-           setTimeout(() => {
-               window.open('https://www.pse.com.co/persona', '_blank');
-           }, 1500);
+           // Redirigir a la página de métodos de pago
+           window.location.href = 'metodospago.html';
         }
 
         // Event Listeners
