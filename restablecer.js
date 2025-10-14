@@ -4,17 +4,25 @@ let botonEnviar = document.querySelector(".submit-btn");
 let form = document.querySelector(".restablecimiento");
 let divfinal = document.querySelector(".recovery-footer"); 
 
+
+
 form.addEventListener("submit", (event) => {
     event.preventDefault();
 
     comparacion();
+})
 
+campo1.addEventListener("focus", () => {
+    
 })
 
 function comparacion () {
     if (campo1.value && campo2.value){
 
-        if(campo2.value = campo1.value){
+        if(campo1.value.length < 8 && campo2.value.length < 8){ 
+            alert("La contraseña debe tener al menos 8 caracteres");
+        } else {
+            if(campo2.value = campo1.value){
             
             alert("¡Contraseña reestablecida correctamente!");
 
@@ -24,10 +32,12 @@ function comparacion () {
             
             divfinal.appendChild(msjIni);
 
-        }  else {
+            }  else {
             alert("Las contraseñas no coinciden")
-        }
-    } else{
+            }
+        } 
+    }else{
         alert("Debes llenar los dos campos")
-    }
+
+    }    
 }
