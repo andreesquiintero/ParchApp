@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seguridad de datos personales y pagos - ParchApp</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* Paleta de Colores de ParchApp: */
+        :root {
+            --verde-vibrante: #457a00;
+            --verde-oscuro: #233d00;
+            --verde-claro: #e4ffc2;
+            --casi-negro: #202e1a;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .main-card {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--casi-negro);
+            font-size: 2em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--verde-claro);
+            padding-bottom: 10px;
+        }
+
+        /* Estilo de la Tarjeta de Contenido */
+        .content-card {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: left;
+            margin-bottom: 25px;
+            border: 1px solid #ddd;
+        }
+        
+        /* === ESTILOS DE PESTAÑAS (TABS) === */
+        .tabs-navigation {
+            display: flex;
+            justify-content: space-around;
+            border-bottom: 2px solid var(--verde-claro);
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 10px 15px;
+            font-size: 0.9em;
+            cursor: pointer;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .tab-button.active {
+            color: var(--verde-vibrante);
+            border-bottom: 3px solid var(--verde-vibrante);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Estilos de Formulario */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--casi-negro);
+            font-size: 0.9em;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        /* Estilo para el campo calculado de Total de Personas (Solo si fuera readonly) */
+        #totalPersonas[readonly] {
+            background-color: #f0f0f0;
+            font-weight: bold;
+            color: var(--verde-oscuro);
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--verde-vibrante);
+            outline: none;
+        }
+        
+        .section-title {
+            color: var(--verde-oscuro);
+            border-bottom: 1px dashed var(--verde-claro);
+            padding-bottom: 5px;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        /* Estilo de la Tarjeta para Acompañantes */
+        .summary-card {
+            background-color: #f0fff0; 
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px solid var(--verde-vibrante);
+        }
+
+        /* Sección de Total a Pagar */
+        .total-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            margin-top: 15px;
+            border-top: 1px solid rgba(69, 122, 0, 0.2);
+        }
+
+        .total-section p {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .total-amount {
+            color: var(--verde-vibrante);
+            font-size: 2.2em;
+            font-weight: bold;
+        }
+
+        /* Botones de Navegación */
+        .btn-navigation {
+             background-color: #ccc;
+             color: var(--casi-negro);
+             padding: 10px 20px;
+             border: none;
+             border-radius: 6px;
+             font-size: 0.95em;
+             font-weight: bold;
+             cursor: pointer;
+             transition: background-color 0.3s;
+             margin-top: 15px;
+             margin-right: 10px;
+             width: auto;
+        }
+        
+        .btn-navigation.next {
+            background-color: var(--verde-vibrante);
+            color: white;
+        }
+        
+        .btn-navigation:hover {
+            background-color: #aaa;
+        }
+        .btn-navigation.next:hover {
+            background-color: var(--verde-oscuro);
+        }
+
+        .btn-primary {
+            background-color: var(--verde-vibrante);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .security-info {
+            background-color: #f0fff0;
+            border: 1px solid var(--verde-vibrante);
+            border-radius: 5px;
+            padding: 10px;
+        }
+        
+        .security-icon {
+            color: var(--verde-vibrante);
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        .transparency-note {
+            font-size: 0.85em;
+            color: var(--verde-vibrante);
+            margin-top: 5px !important;
+            font-style: italic;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-card">
+            <h1>Seguridad de Datos Personales y Pagos</h1>
+
+            <div class="tabs-navigation" id="tabsNavigation">
+                <button class="tab-button active" data-tab="personales"><i class="fas fa-user-circle"></i> Datos Personales</button>
+                <button class="tab-button" data-tab="tour"><i class="fas fa-map-marker-alt"></i> Logística del Tour</button>
+                <button class="tab-button" data-tab="extras"><i class="fas fa-notes-medical"></i> Salud y Extras</button>
+                <button class="tab-button" data-tab="pago"><i class="fas fa-credit-card"></i> Resumen y Pago</button>
+            </div>
+
+            <form id="reservationForm" class="content-card">
+                
+                <div id="personales" class="tab-content active">
+                    <h2 class="section-title">Datos del Viajero Principal</h2>
+                    
+                    <div class="form-group">
+                        <label for="nombre">Nombre Completo:</label>
+                        <input type="text" id="nombre" placeholder="Escribe el nombre completo tal como aparece en tu documento" required>
+                    </div>
+                    
+                    <div class="form-group" style="display:flex; gap:10px;">
+                        <div style="flex:1;">
+                             <label for="tipoDocumento">Tipo de Documento:</label>
+                             <select id="tipoDocumento" required>
+                                <option value="CC">Cédula de Ciudadanía (CC)</option>
+                                <option value="CE">Cédula de Extranjería (CE)</option>
+                                <option value="PAS">Pasaporte</option>
+                            </select>
+                        </div>
+                        <div style="flex:2;">
+                            <label for="documento">Número de Documento:</label>
+                            <input type="text" id="documento" placeholder="Escribe el número de documento/pasaporte" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nacionalidad">Nacionalidad:</label>
+                        <select id="nacionalidad" required>
+                            </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="fechaNacimiento">Fecha de Nacimiento:</label>
+                        <input type="date" id="fechaNacimiento" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="telefono">Teléfono de Contacto:</label>
+                        <input type="tel" id="telefono" placeholder="+57 300 123 4567" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Correo Electrónico:</label>
+                        <input type="email" id="email" placeholder="Escribe tu correo electrónico principal" required>
+                    </div>
+                    
+                    <h2 class="section-title">Datos de Acompañantes</h2>
+                    
+                    <div class="form-group">
+                        <label for="numAcompanantes">¿Cuántos acompañantes viajan contigo?</label>
+                        <input type="number" id="numAcompanantes" min="0" value="0" max="9" required>
+                        </div>
+                    
+                    <div id="acompanantesContainer">
+                        </div>
+                    
+                    <button type="button" class="btn-navigation next" data-target="tour">Siguiente →</button>
+                </div>
+
+                <div id="tour" class="tab-content">
+                    <h2 class="section-title">Logística del Tour</h2>
+
+                    <div class="form-group">
+                        <label for="tourSeleccionado">Tour Seleccionado:</label>
+                        <select id="tourSeleccionado" required>
+                            </select>
+                        <small id="tourInfo" style="color:#666; font-style: italic;"></small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="totalPersonas">Número Total de Personas:</label>
+                        <input type="number" id="totalPersonas" min="1" required>
+                        <small style="color:var(--verde-vibrante); font-weight:bold;">*Puedes modificar la cantidad de viajeros aquí, el precio total se actualizará.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fechaTour">Fecha del Tour:</label>
+                        <input type="date" id="fechaTour" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="recogida">Lugar de Recogida / Punto de Encuentro:</label>
+                        <input list="opcionesRecogida" id="recogida" placeholder="Selecciona un tour para ver el punto principal de recogida" required>
+                        <datalist id="opcionesRecogida">
+                            <option value="Hotel Dann Carlton, El Poblado">Sugerencia: Hotel Dann Carlton, El Poblado</option>
+                            <option value="Estación San Javier del Metro">Sugerencia: Estación San Javier del Metro</option>
+                            <option value="Dirección Personalizada">Sugerencia: Dirección Personalizada</option>
+                        </datalist>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="idioma">Idioma Preferido para el Guía:</label>
+                        <select id="idioma" required>
+                            </select>
+                    </div>
+                    
+                    <button type="button" class="btn-navigation" data-target="personales">← Anterior</button>
+                    <button type="button" class="btn-navigation next" data-target="extras">Siguiente →</button>
+                </div>
+                
+                <div id="extras" class="tab-content">
+                    <h2 class="section-title">Información de Salud y Preferencias</h2>
+
+                    <div class="form-group">
+                        <label for="medica">Información Médica Relevante (Alergias, restricciones, etc.):</label>
+                        <textarea id="medica" rows="3" placeholder="Alergia a frutos secos, usa silla de ruedas, etc."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="alimenticias">Preferencias Alimenticias:</label>
+                        <select id="alimenticias">
+                            <option value="ninguna" selected>Ninguna</option>
+                            <option value="vegetariano">Vegetariano</option>
+                            <option value="vegano">Vegano</option>
+                            <option value="singluten">Sin Gluten</option>
+                            <option value="otros">Otras (Especificar en notas médicas)</option>
+                        </select>
+                    </div>
+                    
+                    <h2 class="section-title">Otros</h2>
+
+                    <div class="form-group checkbox">
+                        <input type="checkbox" id="autorizacion" checked>
+                        <label for="autorizacion">Autorización de Uso de Imagen (Acepto el uso de mis fotos/videos para promoción)</label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="emergencia">Contacto de Emergencia (Nombre y Teléfono):</label>
+                        <input type="text" id="emergencia" placeholder="María P. - 300 987 6543" required>
+                    </div>
+                    
+                    <button type="button" class="btn-navigation" data-target="tour">← Anterior</button>
+                    <button type="button" class="btn-navigation next" data-target="pago">Siguiente →</button>
+                </div>
+                
+                <div id="pago" class="tab-content">
+                    <h2 class="section-title">Resumen Final</h2>
+                    
+                    <div class="summary-card" style="margin-bottom: 10px; border:none; background-color: var(--verde-claro);">
+                        <p id="resumenTour">Tour: (Selecciona un tour)</p>
+                        <p id="resumenTotalPersonas">Total de viajeros: (Calculando...)</p>
+                        <p id="resumenFecha">Fecha: (Selecciona una fecha)</p>
+                    </div>
+                    
+                    <div class="total-section">
+                        <p>Total a pagar:</p>
+                        <span class="total-amount" id="totalAPagar">$ 0</span>
+                    </div>
+
+                    <h2 class="section-title" style="margin-top: 25px;">Método de Pago</h2>
+                    
+                    <div class="form-group">
+                        <label for="metodoPago">Selecciona Método:</label>
+                        <select id="metodoPago" required>
+                            <option value="tarjeta">Tarjeta de Crédito/Débito</option>
+                            <option value="efectivo">Efectivo (Paga al llegar)</option>
+                            <option value="transferencia">Transferencia Bancaria</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" id="comprobanteGrupo" style="display:none;">
+                        <label for="comprobante">Comprobante / Número de Transacción:</label>
+                        <input type="text" id="comprobante" placeholder="Escribe el número de referencia del pago">
+                    </div>
+                    
+                    <div class="form-group" id="titularGrupo">
+                        <label for="titularTarjeta">Nombre del Titular de la Tarjeta (para referencia):</label>
+                        <input type="text" id="titularTarjeta" placeholder="Escribe el nombre del titular">
+                    </div>
+
+                    <div class="security-info">
+                        <i class="fas fa-lock security-icon"></i>
+                        <p>Tu conexión es **100% segura**. Los pagos con tarjeta se procesarán en una **pasarela de pagos segura y certificada**.</p>
+                        <p class="transparency-note">Garantizamos que **nunca almacenamos** información sensible de tarjetas (tokenización).</p>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary" id="confirmAndPay">Proceder al Pago Seguro</button>
+                    
+                    <button type="button" class="btn-navigation" data-target="extras" style="margin-top: 10px;">← Anterior</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. DATOS ESTATICOS GLOBALES ---
+        
+        // SIMULACIÓN de los planes ya publicados (sin "Punto principal:")
+        const destinosData = [
+            { nombre: "Selecciona un Tour", valor: "", url: "", descripcion_corta: "Elige una de las maravillosas opciones para ver el resumen del precio y la recogida.", precio: 0, duracion: "N/A", recogida: "N/A" },
+            { nombre: "Guatapé", valor: "guatape", url: "guatape.png", descripcion_corta: "La aventura perfecta: embalse, zócalos coloridos y el imponente Peñol.", precio: 175000, duracion: "1 Día Completo", recogida: "Parque El Poblado, Medellín." },
+            { nombre: "Jardín", valor: "jardin", url: "jardin.png", descripcion_corta: "Un pueblo que enamora: arquitectura colonial, balcón florido y el mejor café.", precio: 220000, duracion: "1 Día y 1 Noche", recogida: "Terminal del Sur, Medellín." },
+            { nombre: "Comuna 13", valor: "comuna-13", url: "comuna13.png", descripcion_corta: "El arte urbano en su máxima expresión: tour de grafitis, escaleras eléctricas y transformación social.", precio: 150000, duracion: "Medio Día", recogida: "Estación San Javier del Metro." }, 
+            { nombre: "San Rafael", valor: "San Rafael", url: "San Rafael.png", descripcion_corta: "Ríos cristalinos, charcos naturales y pozos verdes, el paraíso de las aguas.", precio: 550000, duracion: "3 Días / 2 Noches", recogida: "C.C. El Tesoro (Parqueadero) - Transporte Bus." },
+            { nombre: "Necoclí", valor: "necoclí", url: "necocli.png", descripcion_corta: "Tranquilidad y sol: playas doradas del caribe chocoano y arena volcánica.", precio: 550000, duracion: "3 Días / 2 Noches", recogida: "Aeropuerto Olaya Herrera - Vuelo Chárter." },
+            { nombre: "Santa Fe de Antioquia", valor: "Santa Fe de Antioquia", url: "SantFeAnt.png", descripcion_corta: "Un viaje al pasado: puentes colgantes, calles empedradas y arquitectura colonial majestuosa.", precio: 550000, duracion: "3 Días / 2 Noches", recogida: "Estación Exposición del Metro - Viaje Vía Túnel." },
+            { nombre: "Jericó", valor: "Jericó", url: "jerico.png", descripcion_corta: "Cuna de la Madre Laura: montañas coloridas, talabartería artesanal y espiritualidad.", precio: 550000, duracion: "3 Días / 2 Noches", recogida: "Sede El Poblado de la empresa." },
+            { nombre: "Medellín", valor: "Medellín", url: "medellin.png", descripcion_corta: "La Ciudad de la Eterna Primavera: metrocable, plaza Botero y vibrante vida nocturna.", precio: 550000, duracion: "3 Días / 2 Noches", recogida: "Hotel Seleccionado (recogida gratuita)." },
+            { nombre: "Parque Arví", valor: "Parque Arví", url: "parqueArví.png", descripcion_corta: "Naturaleza y cultura: caminatas ecológicas, mercado de flores y paseo en metrocable.", precio: 550000, duracion: "3 Días / 2 Noches", recogida: "Estación Acevedo (Metrocable) - Recogida." },
+            { nombre: "San Carlos", valor: "San Carlos", url: "SanCarlos.png", descripcion_corta: "Charcos ocultos y cascadas: un destino de aventura con la calidez de la gente del oriente.", precio: 550000, duracion: "3 Días / 2 Noches", recogida: "Peaje de El Santuario - Recogida por Bus." },
+            { nombre: "Sonsón", valor: "Sonsón", url: "sonson.png", descripcion_corta: "Tradición e historia: el encanto de la cultura paisa, museos y paisajes de páramo.", precio: 550000, duracion: "3 Días / 2 Noches", recogida: "Estación Niquía - Recorrido Carretera." },
+            { nombre: "Támesis", valor: "Támesis", url: "tamesis.png", descripcion_corta: "Tierra de petroglifos: escalada en roca, rituales indígenas y panorámicas impresionantes.", precio: 550000, duracion: "3 Días / 2 Noches", recogida: "Vía Primavera/La Estrella." },
+            { nombre: "El Retiro", valor: "El Retiro", url: "Elretiro.png", descripcion_corta: "El alma de la madera: artesanías únicas, casas coloniales y aire puro cerca de la ciudad.", precio: 550000, duracion: "3 Días / 2 Noches", recogida: "C.C. Viva Envigado - Transporte Minivan." },
+            { nombre: "La Ceja", valor: "La Ceja", url: "laCeja.png", descripcion_corta: "Tierra de bicicletas y flores: gastronomía local, fincas cafeteras y tranquilidad rural.", precio: 550000, duracion: "3 Días / 2 Noches", recogida: "Parque Central de La Ceja." },
+            { nombre: "Hacienda Nápoles", valor: "Hacienda Nápoles", url: "Napoles.png", descripcion_corta: "Aventura salvaje: un parque temático con hipopótamos, mariposario y cascadas.", precio: 550000, duracion: "3 Días / 2 Noches", recogida: "Estación Itagüí del Metro - Bus de Lujo." },
+            { nombre: "Río Claro Reserva Natural", valor: "Río Claro Reserva Natural", url: "Río Claro.png", descripcion_corta: "Maravilla de mármol: canotaje, cavernas y selva húmeda tropical intacta.", precio: 550000, duracion: "3 Días / 2 Noches", recogida: "Terminal del Norte - Bus Expreso." },
+        ];
+
+        // Lista de Países (para Nacionalidad)
+        const countries = [ "Selecciona tu Nacionalidad", "Argentina", "Colombia", "Estados Unidos", "España", "México", "Perú", "Venezuela", "Otro País..." ]; // Versión reducida por espacio
+        
+        // Lista de Idiomas (Global)
+        const globalLanguages = [
+            "Selecciona un Idioma", "Español", "Inglés", "Portugués", "Francés", "Alemán", 
+            "Italiano", "Mandarín", "Japonés", "Ruso", "Otro Idioma (Especifique)",
+        ];
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- 2. SELECTORES DE ELEMENTOS ---
+            const tabsNavigation = document.getElementById('tabsNavigation');
+            const tabButtons = tabsNavigation.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            // Elementos de la Pestaña 1 (Datos Personales)
+            const numAcompanantesInput = document.getElementById('numAcompanantes');
+            const acompanantesContainer = document.getElementById('acompanantesContainer');
+            const nacionalidadSelect = document.getElementById('nacionalidad');
+            
+            // Elementos de la Pestaña 2 (Logística)
+            const tourSeleccionadoSelect = document.getElementById('tourSeleccionado');
+            const totalPersonasInput = document.getElementById('totalPersonas'); 
+            const recogidaInput = document.getElementById('recogida');
+            const idiomaSelect = document.getElementById('idioma');
+            const fechaTourInput = document.getElementById('fechaTour');
+            const tourInfoSmall = document.getElementById('tourInfo');
+            
+            // Elementos de la Pestaña 4 (Pago)
+            const metodoPagoSelect = document.getElementById('metodoPago');
+            const comprobanteGrupo = document.getElementById('comprobanteGrupo');
+            const titularGrupo = document.getElementById('titularGrupo');
+            const confirmAndPay = document.getElementById('confirmAndPay');
+            const totalAPagarSpan = document.getElementById('totalAPagar');
+            const resumenTourP = document.getElementById('resumenTour');
+            const resumenTotalPersonasP = document.getElementById('resumenTotalPersonas');
+            const resumenFechaP = document.getElementById('resumenFecha');
+
+            let planSeleccionado = destinosData[0]; // Inicializar con la opción "Selecciona un Tour"
+
+
+            // --- 3. FUNCIONES DE NAVEGACIÓN Y TABS ---
+            function showTab(tabId) {
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+                tabButtons.forEach(button => {
+                    button.classList.remove('active');
+                });
+
+                document.getElementById(tabId).classList.add('active');
+                document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+                
+                // Actualizar resumen al ir a la pestaña de pago
+                if (tabId === 'pago') {
+                    updateSummary();
+                }
+            }
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    showTab(button.getAttribute('data-tab'));
+                });
+            });
+
+            document.querySelectorAll('.btn-navigation').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const targetTab = e.target.getAttribute('data-target');
+                    if (targetTab) {
+                        showTab(targetTab);
+                    }
+                });
+            });
+
+
+            // --- 4. LÓGICA DE LA PESTAÑA "DATOS PERSONALES" ---
+            
+            function populateNationalities() {
+                countries.forEach((country, index) => {
+                    const option = document.createElement('option');
+                    option.value = country;
+                    option.textContent = country;
+                    if (index === 0) { option.disabled = true; option.selected = true; option.value = ""; }
+                    nacionalidadSelect.appendChild(option);
+                });
+            }
+
+            function renderAcompanantesFields(count) {
+                acompanantesContainer.innerHTML = ''; 
+                if (count <= 0) return;
+
+                for (let i = 1; i <= count; i++) {
+                    const card = document.createElement('div');
+                    card.className = 'summary-card';
+                    card.style.marginTop = '15px';
+                    card.innerHTML = `
+                        <h3 style="color:var(--verde-oscuro); margin-bottom:15px; font-size:1.1em;">Acompañante ${i}</h3>
+                        <div class="form-group"><label for="acomp_${i}_nombre">Nombre Completo:</label><input type="text" id="acomp_${i}_nombre" placeholder="Nombre completo" required></div>
+                        <div class="form-group" style="display:flex; gap:10px;">
+                            <div style="flex:1;"><label for="acomp_${i}_tipoDoc">Tipo Doc.:</label><select id="acomp_${i}_tipoDoc" required><option value="CC">CC</option><option value="PAS" selected>Pasaporte</option></select></div>
+                            <div style="flex:2;"><label for="acomp_${i}_doc">Número de Documento:</label><input type="text" id="acomp_${i}_doc" placeholder="Número de documento/pasaporte" required></div>
+                        </div>
+                        <div class="form-group" style="display:flex; gap:10px;">
+                            <div style="flex:1;"><label for="acomp_${i}_edad">Edad:</label><input type="number" id="acomp_${i}_edad" min="1" max="100" placeholder="Edad" required></div>
+                            <div style="flex:2;"><label for="acomp_${i}_nacionalidad">Nacionalidad:</label><select id="acomp_${i}_nacionalidad" required><option value="" disabled selected>Selecciona</option><option value="COL">Colombia</option><option value="OTR">Otra</option></select></div>
+                        </div>
+                        <div class="form-group"><label for="acomp_${i}_tel">Teléfono de Contacto (Opcional):</label><input type="tel" id="acomp_${i}_tel" placeholder="Teléfono de contacto"></div>
+                    `;
+                    acompanantesContainer.appendChild(card);
+                }
+                updateTotalPeople(); 
+            }
+
+            // Cuando cambian los acompañantes, se actualiza el campo totalPersonas
+            numAcompanantesInput.addEventListener('input', () => {
+                const count = parseInt(numAcompanantesInput.value) || 0;
+                renderAcompanantesFields(count);
+            });
+
+
+            // --- 5. LÓGICA DE LA PESTAÑA "LOGÍSTICA DEL TOUR" ---
+            
+            // A. Sincronizar Total de Personas
+            function updateTotalPeople() {
+                const numAcompanantes = parseInt(numAcompanantesInput.value) || 0;
+                const totalPeople = 1 + numAcompanantes;
+                
+                // Actualiza el campo totalPersonas para darle un valor inicial o mantener la sincronización si no fue modificado manualmente.
+                if (totalPersonasInput.value === "" || parseInt(totalPersonasInput.value) < 1) {
+                    totalPersonasInput.value = totalPeople;
+                } else if (parseInt(totalPersonasInput.value) === 1 + (parseInt(numAcompanantesInput.previousValue) || 0)) {
+                    totalPersonasInput.value = totalPeople;
+                }
+
+                numAcompanantesInput.previousValue = numAcompanantes; // Guarda el valor anterior
+                
+                // Recalcula el total de pago con el valor actual del campo
+                if (planSeleccionado.valor !== "") {
+                    updateTotalPayment(parseInt(totalPersonasInput.value) || 1, planSeleccionado.precio);
+                }
+            }
+            
+            // B. Llenar lista de Tours
+            function populateTours() {
+                destinosData.forEach((tour) => {
+                    const option = document.createElement('option');
+                    option.value = tour.valor;
+                    option.textContent = tour.nombre;
+                    if (tour.valor === "") { option.disabled = true; option.selected = true; }
+                    tourSeleccionadoSelect.appendChild(option);
+                });
+            }
+
+            // C. Manejar cambio de Tour
+            tourSeleccionadoSelect.addEventListener('change', () => {
+                const selectedTourValue = tourSeleccionadoSelect.value;
+                planSeleccionado = destinosData.find(t => t.valor === selectedTourValue);
+
+                if (planSeleccionado && planSeleccionado.valor !== "") {
+                    // 1. Actualizar Placeholder, Valor de Recogida y Descripción (sin prefijo)
+                    recogidaInput.placeholder = `Recogida principal: ${planSeleccionado.recogida}`;
+                    recogidaInput.value = planSeleccionado.recogida;
+                    tourInfoSmall.textContent = `Precio por persona: $${planSeleccionado.precio.toLocaleString('es-CO')} | Duración: ${planSeleccionado.duracion}`;
+                    
+                    // 2. Recalcular el total (usa el valor actual del campo totalPersonas)
+                    updateTotalPayment(parseInt(totalPersonasInput.value) || 1, planSeleccionado.precio);
+                } else {
+                    recogidaInput.placeholder = "Selecciona un tour para ver el punto principal de recogida";
+                    recogidaInput.value = "";
+                    tourInfoSmall.textContent = "";
+                    totalAPagarSpan.textContent = "$ 0";
+                }
+            });
+            
+            // D. Escuchar cambios en el campo Total Personas para recalcular el pago
+            totalPersonasInput.addEventListener('input', () => {
+                const totalPeople = parseInt(totalPersonasInput.value) || 1;
+                if (planSeleccionado.valor !== "") {
+                    updateTotalPayment(totalPeople, planSeleccionado.precio);
+                }
+            });
+
+            // E. Llenar lista de Idiomas Globales
+            function populateGlobalLanguages() {
+                globalLanguages.forEach((lang, index) => {
+                    const option = document.createElement('option');
+                    option.value = lang.split(' ')[0]; 
+                    option.textContent = lang;
+                    if (index === 0) { option.disabled = true; option.selected = true; option.value = ""; }
+                    if (lang.includes("Español")) { option.selected = true; option.value = "Español"; }
+                    idiomaSelect.appendChild(option);
+                });
+            }
+            
+            // F. Función de Cálculo de Pago
+            function updateTotalPayment(totalPeople, pricePerPerson) {
+                const total = totalPeople * pricePerPerson;
+                const formattedTotal = total.toLocaleString('es-CO', { 
+                    style: 'currency', 
+                    currency: 'COP', 
+                    minimumFractionDigits: 0 
+                });
+                totalAPagarSpan.textContent = formattedTotal;
+            }
+            
+            // G. Actualizar Resumen al final
+            function updateSummary() {
+                resumenTourP.textContent = `Tour: ${planSeleccionado.nombre} (${planSeleccionado.duracion})`;
+                resumenFechaP.textContent = `Fecha: ${fechaTourInput.value || 'No seleccionada'}`;
+                resumenTotalPersonasP.textContent = `Total de viajeros: ${totalPersonasInput.value || 1}`;
+                // El total a pagar ya se actualiza con los eventos de cambio
+            }
+
+
+            // --- 6. LÓGICA DE PAGO Y ENVÍO ---
+            metodoPagoSelect.addEventListener('change', (e) => {
+                const value = e.target.value;
+                if (value === 'transferencia' || value === 'efectivo') {
+                    comprobanteGrupo.style.display = 'block';
+                    titularGrupo.style.display = 'none';
+                    confirmAndPay.textContent = 'Confirmar Reserva (Pagar luego/externo)';
+                } else {
+                    comprobanteGrupo.style.display = 'none';
+                    titularGrupo.style.display = 'block';
+                    confirmAndPay.textContent = 'Proceder al Pago Seguro';
+                }
+            });
+
+            document.getElementById('reservationForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (planSeleccionado.valor === "") {
+                    alert("Por favor, selecciona un tour antes de proceder.");
+                    showTab('tour');
+                    return;
+                }
+                
+                // Muestra un resumen de los datos enviados (SIMULACIÓN)
+                const totalFinal = document.getElementById('totalAPagar').textContent;
+                alert(`¡Reserva Enviada!
+                Tour: ${planSeleccionado.nombre}
+                Viajeros: ${totalPersonasInput.value}
+                Fecha: ${fechaTourInput.value}
+                Total: ${totalFinal}
+                
+                SIMULACIÓN: Los datos se procesarían para la pasarela de pago.
+                `);
+            });
+
+
+            // --- 7. INICIALIZACIÓN AL CARGAR ---
+            populateNationalities();
+            populateTours();
+            populateGlobalLanguages();
+            
+            renderAcompanantesFields(parseInt(numAcompanantesInput.value) || 0); 
+            updateTotalPeople(); 
+            
+            tourSeleccionadoSelect.dispatchEvent(new Event('change'));
+            metodoPagoSelect.dispatchEvent(new Event('change')); 
+            showTab('personales'); 
+        });
+    </script>
+</body>
+</html>
