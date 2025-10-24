@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParchApp - Panel de Administrador</title>
+    <!-- Google Fonts - Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ============================================
+           VARIABLES Y RESET
+           ============================================ */
+        :root {
+            --color-primary: #233d00;
+            --color-secondary: #457a00;
+            --color-accent: #e4ffc2;
+            --color-dark: #202e1a;
+            --color-light: #ffffff;
+            --color-gray: #f9f9f9;
+            --color-border: #ddd;
+            --color-error: #d32f2f;
+            --color-success: #388e3c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background-color: var(--color-gray);
+            color: var(--color-dark);
+            line-height: 1.6;
+        }
+        
+        /* ============================================
+           HEADER
+           ============================================ */
+        header {
+            background-color: var(--color-primary);
+            color: var(--color-light);
+            padding: 0.5rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.2rem;
+        }
+        
+        .logo-img {
+            width: 100px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .admin-badge {
+            background-color: var(--color-accent);
+            color: var(--color-primary);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 1rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+        
+        .nav-links a {
+            color: var(--color-light);
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+        
+        .nav-links a:hover {
+            color: var(--color-accent);
+        }
+        
+        /* ============================================
+           MAIN CONTAINER
+           ============================================ */
+        .main-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        /* ============================================
+           FORMULARIO DE PUBLICACIÓN
+           ============================================ */
+        .form-section {
+            background-color: var(--color-light);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .section-title {
+            color: var(--color-primary);
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .section-subtitle {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--color-dark);
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        
+        .required {
+            color: var(--color-error);
+        }
+        
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--color-border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--color-secondary);
+            box-shadow: 0 0 0 3px rgba(69, 122, 0, 0.1);
+        }
+        
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .error-message {
+            color: var(--color-error);
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+            display: none;
+        }
+        
+        .form-input.error,
+        .form-select.error,
+        .form-textarea.error {
+            border-color: var(--color-error);
+        }
+        
+        .btn-submit {
+            background-color: var(--color-secondary);
+            color: var(--color-light);
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+        
+        .btn-submit:hover {
+            background-color: var(--color-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(69, 122, 0, 0.3);
+        }
+        
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+        
+        /* ============================================
+           CATÁLOGO DE PLANES PUBLICADOS
+           ============================================ */
+        .catalog-section {
+            background-color: var(--color-light);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            max-height: 800px;
+            overflow-y: auto;
+        }
+        
+        .plans-grid {
+            display: grid;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .plan-card {
+            background-color: var(--color-light);
+            border: 2px solid var(--color-border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .plan-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border-color: var(--color-secondary);
+        }
+        
+        .plan-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-light);
+            font-size: 3rem;
+            font-weight: 700;
+        }
+        
+        .plan-content {
+            padding: 1.5rem;
+        }
+        
+        .plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+        
+        .plan-name {
+            font-size: 1.3rem;
+            color: var(--color-primary);
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+        
+        .plan-category {
+            background-color: var(--color-accent);
+            color: var(--color-primary);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        .plan-info {
+            margin-bottom: 1rem;
+        }
+        
+        .plan-detail {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .plan-detail strong {
+            color: var(--color-dark);
+            margin-right: 0.5rem;
+        }
+        
+        .plan-price {
+            color: var(--color-secondary);
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .plan-description {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-top: 1rem;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #999;
+        }
+        
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* ============================================
+           MODAL DE ÉXITO
+           ============================================ */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal {
+            background-color: var(--color-light);
+            padding: 2.5rem;
+            border-radius: 16px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+        
+        .modal-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .modal-title {
+            color: var(--color-success);
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .modal-message {
+            color: #666;
+            margin-bottom: 2rem;
+        }
+        
+        .modal-btn {
+            background-color: var(--color-secondary);
+            color: var(--color-light);
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .modal-btn:hover {
+            background-color: var(--color-primary);
+            transform: translateY(-2px);
+        }
+        
+        /* ============================================
+           ANIMACIONES
+           ============================================ */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        /* ============================================
+           RESPONSIVE DESIGN
+           ============================================ */
+        @media (max-width: 1024px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .catalog-section {
+                max-height: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .main-container {
+                padding: 0 1rem;
+                margin: 1rem auto;
+            }
+            
+            .form-section,
+            .catalog-section {
+                padding: 1.5rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ============================================
+         HEADER
+         ============================================ -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <img src="images/logo.png" alt="logo ParchApp" class="logo-img">
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Ver Sitio Público</a></li>
+                <li><a href="admin.html">Administrador</a></li>
+                <li><a href="#">Salir</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- ============================================
+         CONTENEDOR PRINCIPAL
+         ============================================ -->
+    <div class="main-container">
+        <!-- ============================================
+             SECCIÓN: FORMULARIO DE PUBLICACIÓN
+             ============================================ -->
+        <div class="form-section">
+            <h2 class="section-title">Publicar Nuevo Plan Turístico</h2>
+            <p class="section-subtitle">Completa todos los campos para crear un nuevo plan</p>
+            
+            <form id="planForm">
+                <!-- Campo: Nombre del Plan -->
+                <div class="form-group">
+                    <label class="form-label" for="planName">
+                        Nombre del Plan <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="planName" 
+                        class="form-input" 
+                        placeholder="Ej: Tour por Guatapé"
+                    >
+                    <span class="error-message" id="errorName">El nombre es obligatorio</span>
+                </div>
+
+                <!-- Campo: Fecha del Tour -->
+                <div class="form-group">
+                    <label class="form-label" for="planDate">
+                        Fecha del Tour <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="date" 
+                        id="planDate" 
+                        class="form-input"
+                    >
+                    <span class="error-message" id="errorDate">La fecha debe ser actual o futura</span>
+                </div>
+
+                <!-- Campo: Valor -->
+                <div class="form-group">
+                    <label class="form-label" for="planPrice">
+                        Valor (COP) <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="number" 
+                        id="planPrice" 
+                        class="form-input" 
+                        placeholder="150000"
+                        min="0"
+                        step="1000"
+                    >
+                    <span class="error-message" id="errorPrice">El valor debe ser positivo</span>
+                </div>
+
+                <!-- Campo: Ubicación -->
+                <div class="form-group">
+                    <label class="form-label" for="planLocation">
+                        Ubicación <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="planLocation" 
+                        class="form-input" 
+                        placeholder="Ej: Guatapé, Antioquia"
+                    >
+                    <span class="error-message" id="errorLocation">La ubicación es obligatoria</span>
+                </div>
+
+                <!-- Campo: Categoría -->
+                <div class="form-group">
+                    <label class="form-label" for="planCategory">
+                        Categoría <span class="required">*</span>
+                    </label>
+                    <select id="planCategory" class="form-select">
+                        <option value="">Selecciona una categoría</option>
+                        <option value="playa">🏖️ Playa</option>
+                        <option value="montaña">⛰️ Montaña</option>
+                        <option value="ciudad">🏙️ Ciudad</option>
+                        <option value="aventura">🎢 Aventura</option>
+                        <option value="cultural">🎭 Cultural</option>
+                    </select>
+                    <span class="error-message" id="errorCategory">Debes seleccionar una categoría</span>
+                </div>
+
+                <!-- Campo: URL de Imagen -->
+                <div class="form-group">
+                    <label class="form-label" for="planImage">
+                        URL de Imagen de Fondo <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="url" 
+                        id="planImage" 
+                        class="form-input" 
+                        placeholder="https://ejemplo.com/imagen.jpg"
+                    >
+                    <span class="error-message" id="errorImage">Ingresa una URL válida</span>
+                </div>
+
+                <!-- Campo: Descripción -->
+                <div class="form-group">
+                    <label class="form-label" for="planDescription">
+                        Descripción <span class="required">*</span>
+                    </label>
+                    <textarea 
+                        id="planDescription" 
+                        class="form-textarea" 
+                        placeholder="Describe el plan turístico en detalle..."
+                    ></textarea>
+                    <span class="error-message" id="errorDescription">La descripción es obligatoria</span>
+                </div>
+
+                <!-- Botón de Envío -->
+                <button type="submit" class="btn-submit">
+                    Publicar Plan
+                </button>
+            </form>
+        </div>
+
+        <!-- ============================================
+             SECCIÓN: CATÁLOGO DE PLANES PUBLICADOS
+             ============================================ -->
+        <div class="catalog-section">
+            <h2 class="section-title">Planes Publicados</h2>
+            <p class="section-subtitle">Lista de todos los planes turísticos activos</p>
+            
+            <div class="plans-grid" id="plansGrid">
+                <!-- Estado vacío inicial -->
+                <div class="empty-state" id="emptyState">
+                    <div class="empty-state-icon">📋</div>
+                    <p>No hay planes publicados aún</p>
+                    <p style="font-size: 0.9rem; margin-top: 0.5rem;">Crea tu primer plan usando el formulario</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         MODAL DE ÉXITO
+         ============================================ -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-icon">✅</div>
+            <h3 class="modal-title">¡Plan Guardado!</h3>
+            <p class="modal-message">El plan turístico se ha publicado exitosamente</p>
+            <button class="modal-btn" id="closeModal">Aceptar</button>
+        </div>
+    </div>
+
+    <script>
+        // Datos de planes publicados (almacenados en localStorage)
+        let publishedPlans = JSON.parse(localStorage.getItem('parchapp_published_plans')) || [];
+
+        // Elementos DOM
+        const planForm = document.getElementById('planForm');
+        const plansGrid = document.getElementById('plansGrid');
+        const emptyState = document.getElementById('emptyState');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const closeModal = document.getElementById('closeModal');
+
+        // Función para formatear precio
+        function formatPrice(price) {
+            return new Intl.NumberFormat('es-CO', {
+                style: 'currency',
+                currency: 'COP',
+                minimumFractionDigits: 0
+            }).format(price);
+        }
+
+        // Función para mostrar planes en el catálogo
+        function displayPlans() {
+            if (publishedPlans.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            plansGrid.innerHTML = '';
+            
+            // Mostrar planes en orden inverso (más recientes primero)
+            publishedPlans.slice().reverse().forEach(plan => {
+                const planCard = document.createElement('div');
+                planCard.className = 'plan-card';
+                
+                const categoryIcons = {
+                    'playa': '🏖️',
+                    'montaña': '⛰️',
+                    'ciudad': '🏙️',
+                    'aventura': '🎢',
+                    'cultural': '🎭'
+                };
+                
+                planCard.innerHTML = `
+                    <div class="plan-image" style="background-image: url('${plan.image}'); background-size: cover; background-position: center;">
+                        ${!plan.image ? categoryIcons[plan.category] || '🏞️' : ''}
+                    </div>
+                    <div class="plan-content">
+                        <div class="plan-header">
+                            <div>
+                                <h3 class="plan-name">${plan.name}</h3>
+                                <div class="plan-price">${formatPrice(plan.price)}</div>
+                            </div>
+                            <span class="plan-category">${categoryIcons[plan.category]} ${plan.category}</span>
+                        </div>
+                        <div class="plan-info">
+                            <div class="plan-detail">
+                                <strong>📍 Ubicación:</strong> ${plan.location}
+                            </div>
+                            <div class="plan-detail">
+                                <strong>📅 Fecha:</strong> ${plan.date}
+                            </div>
+                        </div>
+                        <p class="plan-description">${plan.description}</p>
+                    </div>
+                `;
+                
+                plansGrid.appendChild(planCard);
+            });
+        }
+
+        // Función para validar formulario
+        function validateForm() {
+            let isValid = true;
+            
+            // Resetear errores
+            document.querySelectorAll('.error-message').forEach(error => {
+                error.style.display = 'none';
+            });
+            document.querySelectorAll('.form-input, .form-select, .form-textarea').forEach(input => {
+                input.classList.remove('error');
+            });
+            
+            // Validar nombre
+            const name = document.getElementById('planName').value.trim();
+            if (!name) {
+                document.getElementById('errorName').style.display = 'block';
+                document.getElementById('planName').classList.add('error');
+                isValid = false;
+            }
+            
+            // Validar fecha
+            const date = document.getElementById('planDate').value;
+            const today = new Date().toISOString().split('T')[0];
+            if (!date || date < today) {
+                document.getElementById('errorDate').style.display = 'block';
+                document.getElementById('planDate').classList.add('error');
+                isValid = false;
+            }
+            
+            // Validar precio
+            const price = parseInt(document.getElementById('planPrice').value);
+            if (!price || price <= 0) {
+                document.getElementById('errorPrice').style.display = 'block';
+                document.getElementById('planPrice').classList.add('error');
+                isValid = false;
+            }
+            
+            // Validar ubicación
+            const location = document.getElementById('planLocation').value.trim();
+            if (!location) {
+                document.getElementById('errorLocation').style.display = 'block';
+                document.getElementById('planLocation').classList.add('error');
+                isValid = false;
+            }
+            
+            // Validar categoría
+            const category = document.getElementById('planCategory').value;
+            if (!category) {
+                document.getElementById('errorCategory').style.display = 'block';
+                document.getElementById('planCategory').classList.add('error');
+                isValid = false;
+            }
+            
+            // Validar imagen
+            const image = document.getElementById('planImage').value.trim();
+            if (!image) {
+                document.getElementById('errorImage').style.display = 'block';
+                document.getElementById('planImage').classList.add('error');
+                isValid = false;
+            }
+            
+            // Validar descripción
+            const description = document.getElementById('planDescription').value.trim();
+            if (!description) {
+                document.getElementById('errorDescription').style.display = 'block';
+                document.getElementById('planDescription').classList.add('error');
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+
+        // Función para guardar plan
+        function savePlan(event) {
+            event.preventDefault();
+            
+            if (!validateForm()) {
+                return;
+            }
+            
+            // Crear objeto plan
+            const plan = {
+                id: Date.now().toString(),
+                name: document.getElementById('planName').value.trim(),
+                date: document.getElementById('planDate').value,
+                price: parseInt(document.getElementById('planPrice').value),
+                location: document.getElementById('planLocation').value.trim(),
+                category: document.getElementById('planCategory').value,
+                image: document.getElementById('planImage').value.trim(),
+                description: document.getElementById('planDescription').value.trim(),
+                availability: "available",
+                maxQuantity: 10
+            };
+            
+            // Agregar a la lista de planes
+            publishedPlans.push(plan);
+            
+            // Guardar en localStorage
+            localStorage.setItem('parchapp_published_plans', JSON.stringify(publishedPlans));
+            
+            // También guardar en el localStorage principal para que la página principal pueda acceder
+            localStorage.setItem('parchapp_destinations', JSON.stringify(publishedPlans));
+            
+            // Actualizar catálogo
+            displayPlans();
+            
+            // Mostrar modal de éxito
+            modalOverlay.classList.add('active');
+            
+            // Limpiar formulario
+            planForm.reset();
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mostrar planes al cargar la página
+            displayPlans();
+            
+            // Configurar formulario
+            planForm.addEventListener('submit', savePlan);
+            
+            // Configurar modal
+            closeModal.addEventListener('click', function() {
+                modalOverlay.classList.remove('active');
+            });
+            
+            // Cerrar modal al hacer clic fuera
+            modalOverlay.addEventListener('click', function(e) {
+                if (e.target === modalOverlay) {
+                    modalOverlay.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
