@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Calificaciones y Reseñas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* Paleta de Colores de ParchApp: */
+        :root {
+            --verde-vibrante: #457a00;
+            --verde-oscuro: #233d00;
+            --verde-claro: #e4ffc2;
+            --casi-negro: #202e1a;
+            --amarillo-estrella: #ffc107;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+        }
+        
+        /* === ESTILOS DEL PANEL DE RESEÑAS === */
+        
+        .reviews-panel {
+            width: 100%;
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+        
+        .reviews-panel h1 {
+            color: var(--verde-oscuro);
+            font-size: 2em;
+            border-bottom: 2px solid var(--verde-claro);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .section-title {
+            color: var(--verde-oscuro);
+            border-bottom: 1px dashed var(--verde-claro);
+            padding-bottom: 5px;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .rating-stars {
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #ccc; /* Estrellas vacías */
+            margin-bottom: 15px;
+        }
+        
+        .rating-stars .fas {
+            color: var(--amarillo-estrella); /* Estrellas llenas */
+        }
+
+        /* Estilos del formulario de reseña */
+        #reviewForm {
+            border: 1px dashed var(--verde-vibrante);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--casi-negro);
+            font-size: 0.9em;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: var(--verde-vibrante);
+            outline: none;
+        }
+        
+        /* Botones */
+        .btn-primary, .btn-secondary {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background-color: var(--verde-vibrante);
+            color: white;
+            width: 48%;
+            float: left;
+        }
+        
+        .btn-secondary {
+            background-color: #f44336;
+            color: white;
+            width: 48%;
+            float: right;
+        }
+        
+        .button-group::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        /* Estilos del Historial de Reseñas */
+        .review-item {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+        
+        .review-item strong {
+            color: var(--verde-vibrante);
+        }
+        
+        .review-item p {
+            margin: 5px 0;
+            font-size: 0.95em;
+            color: #333;
+        }
+        
+        .review-stars {
+            color: var(--amarillo-estrella);
+        }
+
+        .review-date {
+            font-size: 0.8em;
+            color: #999;
+            float: right;
+        }
+
+        .empty-history {
+            text-align: center;
+            color: #999;
+            padding: 20px;
+            border: 1px dashed #ccc;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="reviews-panel">
+            <h1>⭐️ Panel de Calificaciones y Reseñas</h1>
+
+            <form id="reviewForm">
+                <h3 class="section-title">Escribe tu Opinión</h3>
+                
+                <div class="form-group">
+                    <label for="reviewName">Tu Nombre (o alias):</label>
+                    <input type="text" id="reviewName" placeholder="Escribe tu nombre para la reseña" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Tu Calificación:</label>
+                    <div class="rating-stars" id="starRating">
+                        <i class="far fa-star" data-rating="1"></i>
+                        <i class="far fa-star" data-rating="2"></i>
+                        <i class="far fa-star" data-rating="3"></i>
+                        <i class="far fa-star" data-rating="4"></i>
+                        <i class="far fa-star" data-rating="5"></i>
+                    </div>
+                    <input type="hidden" id="ratingValue" value="0" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="reviewText">Comentarios, Sugerencias o Críticas:</label>
+                    <textarea id="reviewText" rows="4" placeholder="Comparte tu experiencia, lo que más te gustó, y cualquier sugerencia de mejora." required></textarea>
+                </div>
+                
+                <div class="button-group">
+                    <button type="submit" class="btn-primary" id="submitReview">Enviar Reseña</button>
+                    <button type="button" class="btn-secondary" id="clearReview">Borrar Contenido</button>
+                </div>
+            </form>
+            
+            <h3 class="section-title">Historial de Reseñas</h3>
+            <div id="reviewsHistory">
+                </div>
+            
+        </div>
+    </div>
+
+    <script>
+        // Historial de Reseñas, ahora INICIA VACÍO
+        let reviewsData = []; 
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- SELECTORES DE ELEMENTOS ---
+            const reviewNameInput = document.getElementById('reviewName');
+            const starRatingContainer = document.getElementById('starRating');
+            const ratingValueInput = document.getElementById('ratingValue');
+            const reviewTextarea = document.getElementById('reviewText');
+            const submitReviewForm = document.getElementById('reviewForm');
+            const clearReviewButton = document.getElementById('clearReview');
+            const reviewsHistoryDiv = document.getElementById('reviewsHistory');
+
+            let currentRating = 0;
+
+            // --- 1. LÓGICA DEL PANEL DE RESEÑAS ---
+
+            // A. Renderizado del Historial de Reseñas
+            function renderReviews() {
+                reviewsHistoryDiv.innerHTML = '';
+                if (reviewsData.length === 0) {
+                    reviewsHistoryDiv.innerHTML = '<div class="empty-history">Aún no hay reseñas en el historial. ¡Sé el primero en calificar!</div>';
+                    return;
+                }
+                
+                reviewsData.forEach(review => {
+                    const reviewItem = document.createElement('div');
+                    reviewItem.className = 'review-item';
+                    
+                    // Función auxiliar para dibujar estrellas
+                    const starHtml = (rating) => {
+                        let html = '';
+                        for (let i = 1; i <= 5; i++) {
+                            if (i <= rating) {
+                                html += '<i class="fas fa-star review-stars"></i>';
+                            } else {
+                                html += '<i class="far fa-star review-stars" style="color:#ccc;"></i>';
+                            }
+                        }
+                        return html;
+                    };
+
+                    reviewItem.innerHTML = `
+                        <p class="review-date">${review.date}</p>
+                        <p><strong>${review.name}</strong> - Calificación: ${starHtml(review.rating)}</p>
+                        <p>${review.text}</p>
+                    `;
+                    reviewsHistoryDiv.appendChild(reviewItem);
+                });
+            }
+
+            // B. Sistema de Calificación de Estrellas (Estrellas Interactivas)
+            starRatingContainer.addEventListener('mouseover', (e) => {
+                if (e.target.tagName === 'I') {
+                    const hoverRating = parseInt(e.target.getAttribute('data-rating'));
+                    starRatingContainer.querySelectorAll('i').forEach(star => {
+                        const starRating = parseInt(star.getAttribute('data-rating'));
+                        if (starRating <= hoverRating) {
+                            star.classList.replace('far', 'fas');
+                        } else {
+                            star.classList.replace('fas', 'far');
+                        }
+                    });
+                }
+            });
+
+            starRatingContainer.addEventListener('mouseout', () => {
+                // Restaurar al valor seleccionado si no hay hover
+                starRatingContainer.querySelectorAll('i').forEach(star => {
+                    const starRating = parseInt(star.getAttribute('data-rating'));
+                    if (starRating <= currentRating) {
+                        star.classList.replace('far', 'fas');
+                    } else {
+                        star.classList.replace('fas', 'far');
+                    }
+                });
+            });
+
+            starRatingContainer.addEventListener('click', (e) => {
+                if (e.target.tagName === 'I') {
+                    currentRating = parseInt(e.target.getAttribute('data-rating'));
+                    ratingValueInput.value = currentRating; // Actualizar el valor oculto
+                    // Aplicar el estado de selección permanentemente
+                    starRatingContainer.querySelectorAll('i').forEach(star => {
+                         star.classList.replace('fas', 'far'); // Limpiar todas
+                    });
+                    starRatingContainer.querySelectorAll('i').forEach(star => {
+                        const starRating = parseInt(star.getAttribute('data-rating'));
+                        if (starRating <= currentRating) {
+                            star.classList.replace('far', 'fas');
+                        }
+                    });
+                }
+            });
+
+            // C. Botones de Acción (Enviar y Borrar)
+            
+            clearReviewButton.addEventListener('click', () => {
+                reviewTextarea.value = '';
+                reviewNameInput.value = '';
+                currentRating = 0;
+                ratingValueInput.value = 0;
+                starRatingContainer.querySelectorAll('i').forEach(star => {
+                    star.classList.replace('fas', 'far');
+                });
+                alert('Contenido de la reseña borrado.');
+            });
+            
+            submitReviewForm.addEventListener('submit', (e) => {
+                e.preventDefault(); 
+                
+                const rating = parseInt(ratingValueInput.value);
+                const reviewText = reviewTextarea.value.trim();
+                const userName = reviewNameInput.value.trim() || 'Cliente Anónimo';
+                
+                if (rating === 0) {
+                    alert('Por favor, selecciona una calificación con estrellas.');
+                    return;
+                }
+                if (reviewText.length < 10) {
+                    alert('Por favor, escribe un comentario más detallado (mínimo 10 caracteres).');
+                    return;
+                }
+                
+                const newReview = {
+                    name: userName,
+                    rating: rating,
+                    text: reviewText,
+                    date: new Date().toISOString().slice(0, 10) // Formato YYYY-MM-DD
+                };
+                
+                // GUARDADO: Añadir la nueva reseña al historial (solo para la sesión actual)
+                reviewsData.unshift(newReview); 
+                renderReviews();
+                
+                // Limpiar el formulario después del envío
+                reviewTextarea.value = '';
+                reviewNameInput.value = '';
+                currentRating = 0;
+                ratingValueInput.value = 0;
+                starRatingContainer.querySelectorAll('i').forEach(star => {
+                    star.classList.replace('fas', 'far');
+                });
+                
+                alert(`¡Gracias por tu reseña, ${userName}! Ha sido enviada con ${rating} estrellas.`);
+            });
+
+
+            // --- 2. INICIALIZACIÓN AL CARGAR ---
+            renderReviews(); // Muestra el historial, que ahora está vacío.
+        });
+    </script>
+</body>
+</html>
