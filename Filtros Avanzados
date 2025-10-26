@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParchApp: Tours y Filtros Avanzados</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* Paleta de Colores de ParchApp: */
+        :root {
+            --verde-vibrante: #457a00;
+            --verde-oscuro: #233d00;
+            --verde-claro: #e4ffc2;
+            --casi-negro: #202e1a;
+            --gris-claro: #f0f0f0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--gris-claro);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Estilos de Encabezado/Botón Principal */
+        .header {
+            background-color: var(--verde-vibrante);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+
+        /* Botón de Filtros (Criterio de Aceptación) */
+        #filterButton {
+            background-color: white;
+            color: var(--verde-vibrante);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        #filterButton:hover {
+            background-color: var(--verde-claro);
+            transform: scale(1.05);
+        }
+
+        /* Contenedor Principal de la Página */
+        .main-content {
+            display: flex;
+            max-width: 1000px; /* Control de ancho para compacidad */
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        /* --- PANEL DE FILTROS --- */
+        .filter-panel {
+            width: 300px;
+            min-width: 280px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            margin-right: 20px;
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+            flex-shrink: 0; 
+        }
+        
+        /* Ocultar inicialmente el panel de filtros */
+        .filter-panel.hidden {
+            transform: translateX(-320px); 
+            opacity: 0;
+            position: absolute; 
+        }
+        
+        .filter-panel h3 {
+            color: var(--verde-oscuro);
+            border-bottom: 2px solid var(--verde-claro);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--casi-negro);
+            font-size: 0.9em;
+        }
+
+        .form-group select, .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        #clearFilters {
+            background-color: #457a00;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            width: 100%;
+            margin-top: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* --- ÁREA DE RESULTADOS --- */
+        .results-area {
+            flex-grow: 1;
+            transition: margin-left 0.3s ease-out;
+            max-width: calc(100% - 320px); 
+        }
+        
+        /* Ajuste para que el área de resultados ocupe todo el ancho cuando los filtros están ocultos */
+        .results-area.full-width {
+            margin-left: 0; 
+            max-width: 100%; 
+        }
+        
+        #resultsContainer {
+            display: grid;
+            gap: 20px;
+            /* Se mantiene el ajuste para 3 columnas compactas */
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            justify-content: center; 
+        }
+
+        /* Media queries para asegurar responsividad */
+        @media (max-width: 900px) { 
+            #resultsContainer {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            }
+        }
+        
+        @media (max-width: 768px) { 
+            .main-content {
+                flex-direction: column; 
+            }
+            .filter-panel {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 20px;
+                position: static; 
+                transform: translateX(0); 
+                opacity: 1; 
+            }
+            .filter-panel.hidden {
+                display: none; 
+            }
+            .results-area {
+                max-width: 100%;
+                margin-left: 0;
+            }
+            .results-area.full-width {
+                margin-left: 0;
+            }
+            #resultsContainer {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            }
+        }
+        
+        @media (max-width: 480px) { /* Móviles */
+            #resultsContainer {
+                grid-template-columns: 1fr; /* Una sola columna para móviles */
+            }
+        }
+        /* ------------------------------------------------ */
+
+
+        .tour-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+
+        .tour-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .tour-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background-color: #aaa; /* Fondo en caso de que la imagen no cargue */
+            display: block; 
+        }
+
+        .card-content {
+            padding: 15px;
+        }
+
+        .card-content h4 {
+            color: var(--verde-vibrante);
+            margin-top: 0;
+            margin-bottom: 5px;
+            font-size: 1.3em;
+        }
+        
+        .card-content p {
+            font-size: 0.9em;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .tour-price {
+            font-size: 1.4em;
+            color: var(--verde-oscuro);
+            font-weight: bold;
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px;
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        
+        .tag {
+            display: inline-block;
+            background-color: var(--verde-claro);
+            color: var(--verde-oscuro);
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            margin-right: 5px;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>ParchApp | Explora Nuestros Tours</h1>
+        <button id="filterButton">
+            <i class="fas fa-filter"></i> Mostrar Filtros
+        </button>
+    </div>
+
+    <div class="main-content">
+        <div class="filter-panel">
+            <h3>Filtros Avanzados</h3>
+            
+            <div class="form-group">
+                <label for="filterLugar">📍 Destino (Lugar):</label>
+                <select id="filterLugar" data-filter="lugar">
+                    <option value="">Todos los Lugares</option>
+                    </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="filterTipoPlan">🗓️ Tipo de Plan (Duración):</label>
+                <select id="filterTipoPlan" data-filter="tipoPlan">
+                    <option value="">Todos los Tipos</option>
+                    </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="filterPrecio">💰 Precio Máximo:</label>
+                <input type="range" id="filterPrecio" min="175000" max="600000" step="25000" value="600000">
+                <div style="display:flex; justify-content: space-between;">
+                    <span>$175,000</span>
+                    <span id="priceValue">$600,000</span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="filterFecha">📅 Fecha (Desde):</label>
+                <input type="date" id="filterFecha" data-filter="fecha">
+            </div>
+            
+            <div class="form-group">
+                <label for="filterAgencia">🏢 Agencia Operadora:</label>
+                <select id="filterAgencia" data-filter="agencia">
+                    <option value="">Todas las Agencias</option>
+                    <option value="Eterna Primavera Tours">Eterna Primavera Tours</option>
+                    <option value="Andes Aventura Expeditions">Andes Aventura Expeditions</option>
+                    <option value="Sol y Mar Antioqueño">Sol y Mar Antioqueño</option>
+                </select>
+            </div>
+            
+            <button id="clearFilters"><i class="fas fa-undo"></i> Limpiar Filtros</button>
+        </div>
+        
+        <div class="results-area" id="resultsArea">
+             <h2>Tours Disponibles <span id="tourCount">(16 tours)</span></h2>
+            <div id="resultsContainer">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. DATOS ESTATICOS GLOBALES (Agencias Actualizadas) ---
+const allTours = [{ nombre: "Guatapé", valor: "guatape", imageUrl: "guatape.png", 
+descripcion_corta: "Embalse, zócalos coloridos y el imponente Peñol.", precio: 175000, duracion:
+ "1 Día Completo", recogida: "El Poblado", tags: ["Pueblos", "Agua"], agencia: "ParchApp Tours" },{ nombre:
+     "Jardín", valor: "jardin", imageUrl: "jardin.png", descripcion_corta:
+      "Arquitectura colonial, balcón florido y el mejor café.", precio: 220000, duracion:
+       "1 Día y 1 Noche", recogida: "Terminal del Sur", tags: ["Pueblos", "Café"], agencia:
+        "Aventuras del Sur" },{ nombre: "Comuna 13", valor: "comuna-13", imageUrl: "comuna13.png",
+         descripcion_corta: "Tour de grafitis, escaleras eléctricas y transformación social.", 
+         precio: 150000, duracion: "Medio Día", recogida: "San Javier", tags: ["Urbano", "Arte"],
+          agencia: "ParchApp Tours" },{ nombre: "San Rafael", valor: "San Rafael", imageUrl:
+           "San Rafael.png", descripcion_corta: "Ríos cristalinos, charcos naturales y pozos verdes.",
+            precio: 550000, duracion: "3 Días / 2 Noches", recogida: "C.C. El Tesoro", tags: 
+            ["Agua", "Naturaleza"], agencia: "Aventuras del Sur" },{ nombre: "Necoclí", valor: "necoclí",
+        imageUrl: "necocli.png", descripcion_corta: "Playas doradas del caribe chocoano y arena volcánica.",
+        precio: 550000, duracion: "3 Días / 2 Noches", recogida: "Aeropuerto Olaya Herrera", tags:
+         ["Playa", "Caribe"], agencia: "Caribe Express" },{ nombre: "Santa Fe de Antioquia", valor: 
+         "Santa Fe de Antioquia", imageUrl: "SantFeAnt.png", descripcion_corta: 
+         "Puentes colgantes, calles empedradas y arquitectura colonial.", precio: 160000, duracion: 
+         "1 Día Completo", recogida: "Exposición", tags: ["Pueblos", "Historia"], agencia: "ParchApp Tours" },
+         { nombre: "Jericó", valor: "jericó", imageUrl: "jerico.png", descripcion_corta:
+          "Montañas coloridas, talabartería artesanal y espiritualidad.", precio: 250000, duracion:
+           "1 Día y 1 Noche", recogida: "Sede El Poblado", tags: ["Pueblos", "Religión"], agencia:
+            "Aventuras del Sur" },{ nombre: "Medellín City Tour", valor: "Medellín", imageUrl:
+             "medellin.png", descripcion_corta: "Metrocable, plaza Botero y vibrante vida nocturna.",
+              precio: 80000, duracion: "Medio Día", recogida: "Hotel Seleccionado", tags: ["Urbano", "Cultura"], agencia: "ParchApp Tours" },{ nombre: "Parque Arví", valor: "Parque Arví", imageUrl: "parqueArví.png", descripcion_corta: "Caminatas ecológicas, mercado de flores y metrocable.", precio: 95000, duracion: "Medio Día", recogida: "Estación Acevedo", tags: ["Naturaleza", "Ecológico"], agencia: "ParchApp Tours" },{ nombre: "San Carlos Aventura", valor: "San Carlos", imageUrl: "San Carlos.png", descripcion_corta: "Charcos ocultos y cascadas, aventura del oriente.", precio: 480000, duracion: "3 Días / 2 Noches", recogida: "Peaje El Santuario", tags: ["Agua", "Aventura"], agencia: "Aventuras del Sur" },{ nombre: "Sonsón Histórico", valor: "Sonsón", imageUrl: "sonson.png", descripcion_corta: "Tradición e historia paisa, museos y paisajes de páramo.", precio: 450000, duracion: "3 Días / 2 Noches", recogida: "Estación Niquía", tags: ["Pueblos", "Historia"], agencia: "Aventuras del Sur" },{ nombre: "Támesis Petroglifos", valor: "Támesis", imageUrl: "tamesis.png", descripcion_corta: "Tierra de petroglifos, escalada en roca y rituales indígenas.", precio: 300000, duracion: "1 Día y 1 Noche", recogida: "Vía Primavera", tags: ["Aventura", "Cultura"], agencia: "Aventuras del Sur" },{ nombre: "El Retiro", valor: "El Retiro", imageUrl: "Elretiro.png", descripcion_corta: "Artesanías únicas, casas coloniales y aire puro.", precio: 110000, duracion: "1 Día Completo", recogida: "C.C. Viva Envigado", tags: ["Pueblos", "Artesanía"], agencia: "ParchApp Tours" },{ nombre: "La Ceja", valor: "La Ceja", imageUrl: "laCeja.png", descripcion_corta: "Tierra de bicicletas y flores: fincas cafeteras y tranquilidad.", precio: 190000, duracion: "1 Día Completo", recogida: "Parque Central La Ceja", tags: ["Pueblos", "Café"], agencia: "Aventuras del Sur" },{ nombre: "Hacienda Nápoles", valor: "Hacienda Nápoles", imageUrl: "Napoles.png", descripcion_corta: "Aventura salvaje: hipopótamos, mariposario y cascadas.", precio: 350000, duracion: "1 Día Completo", recogida: "Estación Itagüí", tags: ["Aventura", "Parque"], agencia: "ParchApp Tours" },{ nombre: "Río Claro Reserva Natural", valor: "Río Claro Reserva Natural", imageUrl: "Río Claro.png", descripcion_corta: "Maravilla de mármol: canotaje, cavernas y selva tropical.", precio: 400000, duracion: "3 Días / 2 Noches", recogida: "Terminal del Norte", tags: ["Naturaleza", "Ecológico"], agencia: "Aventuras del Sur" },];
+    
+        // --- 2. SELECTORES Y VARIABLES (Sin cambios) ---
+        const filterButton = document.getElementById('filterButton');
+        const filterPanel = document.querySelector('.filter-panel');
+        const resultsArea = document.getElementById('resultsArea');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const tourCountSpan = document.getElementById('tourCount');
+        const priceRangeInput = document.getElementById('filterPrecio');
+        const priceValueSpan = document.getElementById('priceValue');
+        const filterLugarSelect = document.getElementById('filterLugar');
+        const filterAgenciaSelect = document.getElementById('filterAgencia');
+        const filterTipoPlanSelect = document.getElementById('filterTipoPlan');
+        const filterFechaInput = document.getElementById('filterFecha');
+        const clearFiltersButton = document.getElementById('clearFilters');
+
+        // --- 3. LÓGICA DE FILTRADO (Sin cambios) ---
+        function applyFilters() {
+            const lugar = filterLugarSelect.value;
+            const tipoPlan = filterTipoPlanSelect.value;
+            const maxPrecio = parseInt(priceRangeInput.value);
+            const agencia = filterAgenciaSelect.value;
+            const fecha = filterFechaInput.value; 
+
+            let filteredTours = allTours.filter(tour => {
+                let matches = true;
+                if (lugar && tour.nombre !== lugar) { matches = false; }
+                if (tipoPlan && !tour.duracion.includes(tipoPlan)) { matches = false; }
+                if (tour.precio > maxPrecio) { matches = false; }
+                if (agencia && tour.agencia !== agencia) { matches = false; }
+                
+                // Simulación de Fecha
+                if (fecha) {
+                    const selectedDate = new Date(fecha);
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0); 
+                    if (selectedDate < today) { matches = false; }
+                    if (tour.duracion.includes('3 Días') && (selectedDate.getTime() - today.getTime()) / (1000 * 3600 * 24) < 2) {
+                         matches = false; 
+                    }
+                }
+                return matches;
+            });
+
+            renderTours(filteredTours);
+        }
+
+        function renderTours(tours) {
+            resultsContainer.innerHTML = '';
+            tourCountSpan.textContent = `(${tours.length} tours)`;
+            
+            if (tours.length === 0) {
+                resultsContainer.innerHTML = `<div class="no-results"><i class="fas fa-exclamation-triangle"></i> No encontramos tours que coincidan con tus filtros. Intenta con otras opciones.</div>`;
+                return;
+            }
+
+            tours.forEach(tour => {
+                const card = document.createElement('div');
+                card.className = 'tour-card';
+                
+                const formattedPrice = tour.precio.toLocaleString('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 });
+                const tagsHtml = tour.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
+                
+                card.innerHTML = `
+                    <img src="${tour.imageUrl}" alt="Imagen de ${tour.nombre}" onerror="this.onerror=null;this.style.backgroundColor='#aaa';"> 
+                    <div class="card-content">
+                        <h4><i class="fas fa-route"></i> ${tour.nombre}</h4>
+                        <p>${tour.descripcion_corta}</p>
+                        <p class="tour-price">${formattedPrice} <span style="font-size: 0.7em; font-weight: normal; color: #999;">por persona</span></p>
+                        ${tagsHtml}
+                        <p style="margin-top: 10px; font-size: 0.85em;">Agencia: <strong>${tour.agencia}</strong> | Duración: <strong>${tour.duracion}</strong></p>
+                    </div>
+                `;
+                resultsContainer.appendChild(card);
+            });
+        }
+        
+        /**
+         * Inicializa las opciones de filtro (Lugares y Duración).
+         * NOTA: El filtro de Agencia ahora se basa en las opciones estáticas del HTML.
+         */
+        function initializeFilters() {
+            // Llenar opciones de Lugares
+            const lugares = [...new Set(allTours.map(tour => tour.nombre))].sort();
+            lugares.forEach(lugar => {
+                const option = document.createElement('option');
+                option.value = lugar;
+                option.textContent = lugar;
+                filterLugarSelect.appendChild(option);
+            });
+
+            // Llenar opciones de Duración (Tipo de Plan)
+            const duraciones = [...new Set(allTours.map(tour => {
+                if (tour.duracion.includes('Medio Día')) return 'Medio Día';
+                if (tour.duracion.includes('3 Días')) return '3 Días / 2 Noches';
+                if (tour.duracion.includes('1 Día Completo')) return '1 Día Completo';
+                if (tour.duracion.includes('1 Día y 1 Noche')) return '1 Día y 1 Noche';
+                return tour.duracion;
+            }))].sort();
+
+            duraciones.forEach(duracion => {
+                const option = document.createElement('option');
+                option.value = duracion;
+                option.textContent = duracion;
+                filterTipoPlanSelect.appendChild(option);
+            });
+            
+            // Vincular eventos de cambio a los filtros
+            document.querySelectorAll('.filter-panel select, .filter-panel input:not([type="range"])').forEach(element => {
+                element.addEventListener('change', applyFilters);
+            });
+            
+            // Evento para el rango de precio
+            priceRangeInput.addEventListener('input', (e) => {
+                const value = parseInt(e.target.value);
+                priceValueSpan.textContent = `$${value.toLocaleString('es-CO')}`;
+                applyFilters(); 
+            });
+            
+            // Evento para limpiar filtros
+            clearFiltersButton.addEventListener('click', () => {
+                filterLugarSelect.value = '';
+                filterTipoPlanSelect.value = '';
+                filterAgenciaSelect.value = '';
+                
+                priceRangeInput.value = priceRangeInput.max;
+                priceValueSpan.textContent = `$${parseInt(priceRangeInput.max).toLocaleString('es-CO')}`;
+                
+                filterFechaInput.value = '';
+                
+                applyFilters();
+            });
+        }
+        
+        // --- 4. CONTROL DE VISIBILIDAD DEL PANEL (Sin cambios) ---
+        
+        filterButton.addEventListener('click', () => {
+            const isHidden = filterPanel.classList.toggle('hidden');
+            resultsArea.classList.toggle('full-width', isHidden);
+            
+            if (isHidden) {
+                filterButton.innerHTML = '<i class="fas fa-filter"></i> Mostrar Filtros';
+            } else {
+                filterButton.innerHTML = '<i class="fas fa-times"></i> Ocultar Filtros';
+            }
+        });
+
+        // --- 5. INICIALIZACIÓN (Sin cambios) ---
+        initializeFilters();
+        renderTours(allTours);
+        
+        // Ocultar el panel por defecto al inicio
+        filterPanel.classList.add('hidden');
+        resultsArea.classList.add('full-width');
+    </script>
+</body>
+</html>
