@@ -519,7 +519,9 @@
     <!-- Header -->
     <header>
         <nav class="navbar">
-            <div class="logo">Parch<span>App</span></div>
+            <div class="logo-container">
+            <img src="logo.png" alt="ParchApp" class="logo">
+        </div>
             <ul class="nav-links">
                 <li><a href="index.html">Inicio</a></li>
                 <li><a href="index.html#destinos">Destinos</a></li>
@@ -931,13 +933,8 @@
                return;
            }
        
-           // Simular proceso de pago
-           showAlert('Redirigiendo a PSE para el pago...', 'success');
-
-           // Redirección a PSE
-           setTimeout(() => {
-               window.open('https://www.pse.com.co/persona', '_blank');
-           }, 1500);
+           // Redirigir a la página de métodos de pago
+           window.location.href = 'metodospago.html';
         }
 
         // Event Listeners

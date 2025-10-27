@@ -47,15 +47,14 @@
             margin: 0 auto;
         }
         
-        .logo {
-            display: flex;
-            align-items: center;
-            font-size: 1.8rem;
-            font-weight: bold;
+
+        .logo-container {
+            padding: 0.5rem 0;
         }
         
-        .logo span {
-            color: var(--color-accent);
+        .logo {
+            max-width: 150px;
+            height: auto;
         }
         
         .nav-links {
@@ -108,6 +107,33 @@
         
         .login-header p {
             color: #666;
+        }
+        
+        .user-type-selector {
+            display: flex;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+        }
+        
+        .user-type-btn {
+            flex: 1;
+            padding: 0.8rem;
+            background-color: #f5f5f5;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .user-type-btn.active {
+            background-color: var(--color-secondary);
+            color: var(--color-light);
+        }
+        
+        .user-type-btn:not(.active):hover {
+            background-color: #e9e9e9;
         }
         
         .form-group {
@@ -395,7 +421,9 @@
     <!-- Header -->
     <header>
         <nav class="navbar">
-            <div class="logo">Parch<span>App</span></div>
+            <div class="logo-container">
+            <img src="logo.png" alt="ParchApp" class="logo">
+        </div>
             <ul class="nav-links">
                 <li><a href="index.html">Inicio</a></li>
                 <li><a href="index.html#destinos">Destinos</a></li>
@@ -416,11 +444,17 @@
             <!-- Alert Container -->
             <div id="alertContainer"></div>
             
+            <!-- Selector de tipo de usuario -->
+            <div class="user-type-selector">
+                <button type="button" class="user-type-btn active" data-type="user">Usuario</button>
+                <button type="button" class="user-type-btn" data-type="admin">Administrador</button>
+            </div>
+            
             <form id="loginForm">
                 <div class="form-group">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" id="email" class="form-input" placeholder="tu@email.com" required>
-                    <div class="error-message" id="emailError">Por favor ingresa un email válido</div>
+                    <label for="username" class="form-label" id="usernameLabel">Usuario</label>
+                    <input type="text" id="username" class="form-input" placeholder="Ingresa tu usuario" required>
+                    <div class="error-message" id="usernameError">Por favor ingresa tu usuario</div>
                 </div>
                 
                 <div class="form-group">
@@ -436,7 +470,7 @@
                 <button type="submit" class="btn" id="loginBtn">Iniciar Sesión</button>
             </form>
             
-            <div class="social-login">
+            <div class="social-login" id="socialLogin">
                 <p>O inicia sesión con</p>
                 <div class="social-buttons">
                     <button type="button" class="social-btn google">
@@ -448,7 +482,7 @@
                 </div>
             </div>
             
-            <div class="register-link">
+            <div class="register-link" id="registerLink">
                 ¿No tienes una cuenta? <a href="registro.html" target="_blank">Regístrate aquí</a>
             </div>
         </div>
@@ -497,12 +531,59 @@
             const form = document.getElementById('loginForm');
             const alertContainer = document.getElementById('alertContainer');
             const loginBtn = document.getElementById('loginBtn');
+            const userTypeBtns = document.querySelectorAll('.user-type-btn');
+            const usernameInput = document.getElementById('username');
+            const usernameLabel = document.getElementById('usernameLabel');
+            const socialLogin = document.getElementById('socialLogin');
+            const registerLink = document.getElementById('registerLink');
             
-            // Credenciales de ejemplo (en un caso real, esto vendría del backend)
+            // Credenciales de ejemplo
             const demoCredentials = {
-                email: "usuario@demo.com",
-                password: "demo123"
+                user: {
+                    username: "usuario",
+                    password: "demo123"
+                },
+                admin: {
+                    username: "admin",
+                    password: "admin123"
+                }
             };
+            
+            // Tipo de usuario actual
+            let currentUserType = 'user';
+            
+            // Función para cambiar tipo de usuario
+            function setUserType(type) {
+                currentUserType = type;
+                
+                // Actualizar botones activos
+                userTypeBtns.forEach(btn => {
+                    if (btn.dataset.type === type) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+                
+                // Actualizar interfaz según el tipo de usuario
+                if (type === 'admin') {
+                    usernameLabel.textContent = 'Usuario Administrador';
+                    usernameInput.placeholder = 'Ingresa tu usuario de administrador';
+                    socialLogin.style.display = 'none';
+                    registerLink.style.display = 'none';
+                } else {
+                    usernameLabel.textContent = 'Usuario';
+                    usernameInput.placeholder = 'Ingresa tu usuario';
+                    socialLogin.style.display = 'block';
+                    registerLink.style.display = 'block';
+                }
+                
+                // Limpiar campos
+                usernameInput.value = '';
+                document.getElementById('password').value = '';
+                clearErrors();
+                alertContainer.innerHTML = '';
+            }
             
             // Función para mostrar alertas
             function showAlert(message, type) {
@@ -516,10 +597,14 @@
                 }
             }
             
-            // Función para validar email
-            function isValidEmail(email) {
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                return emailRegex.test(email);
+            // Función para limpiar errores
+            function clearErrors() {
+                document.querySelectorAll('.error-message').forEach(error => {
+                    error.classList.remove('show');
+                });
+                document.querySelectorAll('.form-input').forEach(input => {
+                    input.classList.remove('error');
+                });
             }
             
             // Función para mostrar/ocultar errores
@@ -540,10 +625,17 @@
                 }
             }
             
+            // Event listeners para botones de tipo de usuario
+            userTypeBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    setUserType(this.dataset.type);
+                });
+            });
+            
             // Validación en tiempo real
-            document.getElementById('email').addEventListener('blur', function() {
-                const email = this.value.trim();
-                toggleError('emailError', email && !isValidEmail(email));
+            usernameInput.addEventListener('blur', function() {
+                const username = this.value.trim();
+                toggleError('usernameError', !username);
             });
             
             document.getElementById('password').addEventListener('blur', function() {
@@ -556,17 +648,17 @@
                 e.preventDefault();
                 
                 // Obtener valores
-                const email = document.getElementById('email').value.trim();
+                const username = usernameInput.value.trim();
                 const password = document.getElementById('password').value;
                 
                 // Validaciones
                 let isValid = true;
                 
-                if (!email || !isValidEmail(email)) {
-                    toggleError('emailError', true);
+                if (!username) {
+                    toggleError('usernameError', true);
                     isValid = false;
                 } else {
-                    toggleError('emailError', false);
+                    toggleError('usernameError', false);
                 }
                 
                 if (!password) {
@@ -584,16 +676,21 @@
                     
                     // Simular petición al servidor
                     setTimeout(() => {
-                        // Verificar credenciales (en un caso real, esto se haría en el backend)
-                        if (email === demoCredentials.email && password === demoCredentials.password) {
-                            showAlert('¡Inicio de sesión exitoso! Redirigiendo...', 'success');
+                        // Verificar credenciales según el tipo de usuario
+                        const credentials = demoCredentials[currentUserType];
+                        if (username === credentials.username && password === credentials.password) {
+                            showAlert(`¡Inicio de sesión exitoso! Redirigiendo al ${currentUserType === 'admin' ? 'panel de administración' : 'inicio'}...`, 'success');
                             
                             // Simular redirección después de 2 segundos
                             setTimeout(() => {
-                                window.location.href = 'index.html';
+                                if (currentUserType === 'admin') {
+                                    window.location.href = 'admin.html';
+                                } else {
+                                    window.location.href = 'index.html';
+                                }
                             }, 2000);
                         } else {
-                            showAlert('Credenciales incorrectas. Por favor verifica tu email y contraseña.', 'error');
+                            showAlert('Credenciales incorrectas. Por favor verifica tu usuario y contraseña.', 'error');
                             loginBtn.textContent = 'Iniciar Sesión';
                             loginBtn.disabled = false;
                         }
@@ -603,7 +700,7 @@
                 }
             });
             
-            // Funcionalidad para botones de redes sociales
+            // Funcionalidad para botones de redes sociales (solo para usuarios normales)
             document.querySelectorAll('.social-btn').forEach(button => {
                 button.addEventListener('click', function() {
                     const provider = this.classList.contains('google') ? 'Google' : 'Facebook';
@@ -615,6 +712,9 @@
                     }, 1000);
                 });
             });
+            
+            // Inicializar con usuario normal
+            setUserType('user');
         });
     </script>
 </body>
