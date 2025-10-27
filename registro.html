@@ -47,17 +47,14 @@
             margin: 0 auto;
         }
         
+     .logo-container {
+            padding: 0.5rem 0;
+        }
+        
         .logo {
-            display: flex;
-            align-items: center;
-            font-size: 1.8rem;
-            font-weight: bold;
+            max-width: 150px;
+            height: auto;
         }
-        
-        .logo span {
-            color: var(--color-accent);
-        }
-        
         .nav-links {
             display: flex;
             list-style: none;
@@ -334,7 +331,9 @@
     <!-- Header -->
     <header>
         <nav class="navbar">
-            <div class="logo">Parch<span>App</span></div>
+                    <div class="logo-container">
+            <img src="logo.png" alt="ParchApp" class="logo">
+        </div>
             <ul class="nav-links">
                 <li><a href="index.html">Inicio</a></li>
                 <li><a href="index.html#destinos">Destinos</a></li>

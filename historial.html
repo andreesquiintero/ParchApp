@@ -49,15 +49,14 @@
             margin: 0 auto;
         }
         
-        .logo {
-            display: flex;
-            align-items: center;
-            font-size: 1.8rem;
-            font-weight: bold;
+
+        .logo-container {
+            padding: 0.5rem 0;
         }
         
-        .logo span {
-            color: var(--color-accent);
+        .logo {
+            max-width: 150px;
+            height: auto;
         }
         
         .nav-links {
@@ -588,7 +587,7 @@
                 tourId: "rio-claro",
                 tourName: "Río Claro - Aventura Extrema",
                 image: "https://www.viajescomfama.com/portals/1139/Images/rio-claro/viajescomfama-antioquia-viva-rio-claro.jpg",
-                date: "2024-06-10",
+                date: "2025-10-19",
                 travelers: 3,
                 price: 540000,
                 status: "upcoming",
@@ -710,6 +709,11 @@
                 
                 const reservationCard = document.createElement('div');
                 reservationCard.className = 'reservation-card';
+
+                //Añadir ID y Fecha del Tour como Data Attributes
+                reservationCard.setAttribute('data-reservation-id', reservation.id);
+                reservationCard.setAttribute('data-tour-date', reservation.date);
+
                 reservationCard.innerHTML = `
                     <div class="reservation-header">
                         <div>
@@ -762,6 +766,8 @@
                 reservationsContainer.appendChild(reservationCard);
             });
         }
+ 
+        //onclick="cancelReservation('${reservation.id}')"> ddespues de btn-cancel
 
         // Funciones de acción
         function viewReservationDetails(reservationId) {
@@ -773,10 +779,57 @@
             // window.location.href = `tour.html?id=${tourId}`;
         }
 
+
+
         function cancelReservation(reservationId) {
-            if (confirm('¿Estás seguro de que quieres cancelar esta reserva?')) {
-                alert(`Reserva ${reservationId} cancelada exitosamente.\n\nEn una implementación real, esto actualizaría el estado en la base de datos.`);
-                // Aquí iría la lógica para cancelar la reserva
+            //Encontrar la tarjeta de reserva usando el atributo data-
+            let tarjetaReserva = document.querySelector(`.reservation-card[data-reservation-id="${reservationId}"]`);
+
+            if (!tarjetaReserva) {
+                console.error(`No se encontró la tarjeta para la reserva ID: ${reservationId}`);
+                return;
+            }
+
+            // Obtener la fecha del tour para la validación
+            let fechaTourString = tarjetaReserva.getAttribute('data-tour-date');
+            if (!fechaTourString) {
+                alert("Error: Fecha de tour no encontrada para validación.");
+                return;
+            }
+
+            //Lógica de Validación de 48 Horas
+            let fechaTour = new Date(fechaTourString);
+            let fechaActual = new Date();
+
+            // Límite: 48 horas * 60 min * 60 seg * 1000 ms
+            const limiteMilisegundos = 48 * 60 * 60 * 1000; // conversion de horas a ms
+            const diferenciaMilisegundos = fechaTour.getTime() - fechaActual.getTime();
+            //se verifica si la diferencia es menor al limite
+
+            if (diferenciaMilisegundos < limiteMilisegundos) {
+                alert(`❌ Error: La cancelación de esta reserva solo es posible si faltan más de 48 horas para el tour. Faltan ${Math.ceil(diferenciaMilisegundos / (60 * 60 * 1000))} horas.`);
+                return;
+            }
+
+
+            if (confirm('✅ ¡Faltan más de 48 horas! ¿Estás seguro de que quieres cancelar esta reserva?')) {
+        
+        
+                // Simulación:
+                alert(`Reserva ${reservationId} cancelada exitosamente.`);
+
+            
+                const tourBuscado = reservationsData.find(tour => tour.id === reservationId);
+                console.log(tourBuscado);
+
+                tourBuscado.status = 'cancelled';
+                tarjetaReserva.querySelector('.status-badge').textContent = 'Cancelado';
+                tarjetaReserva.querySelector('.status-badge').className = 'status-badge status-cancelled';
+
+                
+                const cancelBtn = tarjetaReserva.querySelector(`.reservation-actions [onclick*="cancelReservation('${reservationId}')"]`);
+                if (cancelBtn) cancelBtn.remove();
+                
             }
         }
 
