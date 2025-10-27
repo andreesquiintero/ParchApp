@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pago Exitoso - ParchApp</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">Parch<span>App</span></div>
+            <ul class="nav-links">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="index.html#destinos">Destinos</a></li>
+                <li><a href="historial.html">Mi Historial</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+                <li class="cart-icon" onclick="window.open('carrito.html', '_blank')">
+                    <span>🛒</span>
+                    <span class="cart-count" id="cartCount">0</span>
+                </li>
+            </ul>
+            <div class="auth-buttons">
+                <button class="btn btn-login" onclick="window.open('login.html', '_blank')">Iniciar Sesión</button>
+                <button class="btn btn-register" onclick="window.open('registro.html', '_blank')">Registrarse</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="success-container">
+            <div class="success-icon">✅</div>
+            <h1 class="success-title">¡Pago Exitoso!</h1>
+            <p class="success-subtitle">Tu reserva ha sido confirmada. Recibirás un correo electrónico con todos los detalles.</p>
+            
+            <div class="confirmation-details">
+                <div class="detail-section">
+                    <h3 class="detail-title">Detalles del Pago</h3>
+                    <div class="detail-grid" id="paymentDetails">
+                        <!-- Los detalles del pago se cargarán aquí dinámicamente -->
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h3 class="detail-title">Resumen de tu Orden</h3>
+                    <div class="order-items" id="orderItems">
+                        <!-- Los items de la orden se cargarán aquí dinámicamente -->
+                    </div>
+                    <div class="total-section">
+                        <span>Total Pagado:</span>
+                        <span id="totalAmount">$0</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <a href="historial.html" class="btn-primary">Ver Mi Historial</a>
+                <a href="index.html" class="btn-outline">Seguir Explorando</a>
+            </div>
+        </div>
+        
+        <div class="next-steps">
+            <h2 class="steps-title">Próximos Pasos</h2>
+            <ul class="steps-list">
+                <li class="step-item">
+                    <div class="step-icon">📧</div>
+                    <h4 class="step-title">Confirmación por Email</h4>
+                    <p class="step-description">Recibirás un correo con los detalles de tu reserva en los próximos minutos.</p>
+                </li>
+                <li class="step-item">
+                    <div class="step-icon">📱</div>
+                    <h4 class="step-title">Recordatorio</h4>
+                    <p class="step-description">Te enviaremos un recordatorio 24 horas antes de tu tour.</p>
+                </li>
+                <li class="step-item">
+                    <div class="step-icon">👥</div>
+                    <h4 class="step-title">Guía Asignado</h4>
+                    <p class="step-description">Tu guía se pondrá en contacto contigo para coordinar los detalles.</p>
+                </li>
+            </ul>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer id="contacto">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ParchApp</h3>
+                <p>Descubre las maravillas de Antioquia con nuestras experiencias únicas y tours personalizados.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Enlaces Rápidos</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="index.html#destinos">Destinos</a></li>
+                    <li><a href="historial.html">Mi Historial</a></li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Legal</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Términos y Condiciones</a></li>
+                    <li><a href="#">Política de Privacidad</a></li>
+                    <li><a href="#">Cookies</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contacto</h3>
+                <ul class="footer-links">
+                    <li>Email: info@parchapp.com</li>
+                    <li>Teléfono: +57 300 123 4567</li>
+                    <li>Medellín, Antioquia</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2023 ParchApp. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="pagoexitoso.js"></script>
+</body>
+</html>

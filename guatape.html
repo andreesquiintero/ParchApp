@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tour a Guatapé - ParchApp</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">Parch<span>App</span></div>
+            <ul class="nav-links">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="index.html#destinos">Destinos</a></li>
+                <li><a href="historial.html">Mi Historial</a></li>
+                <li><a href="index.html#contacto">Contacto</a></li>
+                <li class="cart-icon" onclick="window.open('carrito.html', '_blank')">
+                    <span>🛒</span>
+                    <span class="cart-count" id="cartCount">0</span>
+                </li>
+            </ul>
+            <div class="auth-buttons">
+                <button class="btn btn-login" onclick="window.open('login.html', '_blank')">Iniciar Sesión</button>
+                <button class="btn btn-register" onclick="window.open('registro.html', '_blank')">Registrarse</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Alert Container -->
+    <div id="alertContainer" class="alert"></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <a href="index.html">Inicio</a> / 
+            <a href="index.html#destinos">Destinos</a> / 
+            <span>Tour a Guatapé</span>
+        </div>
+
+        <!-- Tour Header -->
+        <div class="tour-header">
+            <div class="tour-gallery">
+                <img src="https://cincohorizontes.com/wp-content/uploads/2021/10/La-Piedra-del-Penon-de-Guatape-al-fondo.jpg" 
+                     alt="Guatapé - Piedra del Peñol" class="main-image" id="mainImage">
+                <div class="image-thumbnails">
+                    <img src="https://cincohorizontes.com/wp-content/uploads/2021/10/La-Piedra-del-Penon-de-Guatape-al-fondo.jpg" 
+                         alt="Vista 1" class="thumbnail" onclick="changeImage(this.src)">
+                    <img src="https://media.traveler.es/photos/6137776bb57001fc862c8f2b/4:3/w_852,h_639,c_limit/106157.jpg" 
+                         alt="Vista 2" class="thumbnail" onclick="changeImage(this.src)">
+                    <img src="https://content.r9cdn.net/rimg/dimg/d0/0f/96f55a56-city-303725-164b7fb4489.jpg?width=1366&height=768&xhint=1461&yhint=805&crop=true" 
+                         alt="Vista 3" class="thumbnail" onclick="changeImage(this.src)">
+                    <img src="https://i0.wp.com/foodandpleasure.com/wp-content/uploads/2023/10/guatape-shutterstock.jpg?fit=1500%2C843&ssl=1" 
+                         alt="Vista 4" class="thumbnail" onclick="changeImage(this.src)">
+                </div>
+            </div>
+
+            <div class="tour-info">
+                <h1 class="tour-title">Tour a Guatapé - Piedra del Peñol</h1>
+                <div class="tour-meta">
+                    <div class="tour-rating">
+                        <span>⭐ 4.8</span>
+                        <span>(124 reseñas)</span>
+                    </div>
+                    <div class="tour-difficulty difficulty-easy">Fácil</div>
+                </div>
+                
+                <div class="tour-price">$120.000</div>
+                <p style="color: #666; margin-bottom: 1.5rem;">por persona</p>
+                
+                <div class="tour-actions">
+                    <button class="btn btn-primary" onclick="addToCart('guatape')">
+                        🛒 Agregar al Carrito
+                    </button>
+                    <button class="btn btn-outline" onclick="window.open('carrito.html', '_blank')">
+                        Reservar Ahora
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Share Section -->
+        <div class="share-section">
+            <h3 class="share-title">📤 Compartir este Tour</h3>
+            <div class="share-buttons">
+                <button class="share-btn share-facebook" onclick="shareOnFacebook()">
+                    📘 Facebook
+                </button>
+                <button class="share-btn share-twitter" onclick="shareOnTwitter()">
+                    🐦 Twitter
+                </button>
+                <button class="share-btn share-instagram" onclick="shareOnInstagram()">
+                    📷 Instagram
+                </button>
+                <button class="share-btn share-whatsapp" onclick="shareOnWhatsApp()">
+                    💚 WhatsApp
+                </button>
+                <button class="share-btn share-linkedin" onclick="shareOnLinkedIn()">
+                    💼 LinkedIn
+                </button>
+                <button class="share-btn share-copy" onclick="copyTourLink()">
+                    📋 Copiar Enlace
+                </button>
+            </div>
+        </div>
+
+        <!-- Tour Details -->
+        <div class="tour-details">
+            <div class="details-content">
+                <h2 class="section-title">Descripción del Tour</h2>
+                <div class="description">
+                    <p>Descubre uno de los destinos más emblemáticos de Antioquia con nuestro tour completo a Guatapé. 
+                    Sube los 740 escalones de la Piedra del Peñol para disfrutar de una vista panorámica espectacular 
+                    del embalse y sus islas.</p>
+                    
+                    <p>Explora las coloridas calles de Guatapé, conocidas por sus zócalos únicos que cuentan historias 
+                    de la cultura local. Navega por el embalse y descubre las islas secretas mientras aprendes sobre 
+                    la historia y geografía de esta maravilla natural.</p>
+                </div>
+
+                <div class="highlights">
+                    <h3 class="section-title">Lo más destacado</h3>
+                    <ul class="highlight-list">
+                        <li>Vista panorámica desde la cima de la Piedra del Peñol</li>
+                        <li>Recorrido por las coloridas calles de Guatapé</li>
+                        <li>Paseo en lancha por el embalse</li>
+                        <li>Almuerzo típico antioqueño incluido</li>
+                        <li>Guía turístico certificado</li>
+                        <li>Transporte ida y vuelta desde Medellín</li>
+                    </ul>
+                </div>
+
+                <div class="itinerary">
+                    <h3 class="section-title">Itinerario</h3>
+                    <div class="itinerary-item">
+                        <div class="itinerary-time">⏰ 7:00 AM - Salida desde Medellín</div>
+                        <p>Recogida en punto central y inicio del viaje hacia Guatapé</p>
+                    </div>
+                    <div class="itinerary-item">
+                        <div class="itinerary-time">⏰ 9:00 AM - Ascenso a la Piedra del Peñol</div>
+                        <p>Subida a la cima para disfrutar de vistas espectaculares</p>
+                    </div>
+                    <div class="itinerary-item">
+                        <div class="itinerary-time">⏰ 12:00 PM - Almuerzo típico</div>
+                        <p>Degustación de comida tradicional antioqueña</p>
+                    </div>
+                    <div class="itinerary-item">
+                        <div class="itinerary-time">⏰ 2:00 PM - Recorrido por Guatapé</div>
+                        <p>Exploración del pueblo y sus coloridas calles</p>
+                    </div>
+                    <div class="itinerary-item">
+                        <div class="itinerary-time">⏰ 4:00 PM - Paseo en lancha</div>
+                        <p>Navegación por el embalse y sus islas</p>
+                    </div>
+                    <div class="itinerary-item">
+                        <div class="itinerary-time">⏰ 6:00 PM - Regreso a Medellín</div>
+                        <p>Fin del tour y retorno al punto de partida</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-info">
+                <div class="info-card">
+                    <h3 class="info-title">📅 Información del Tour</h3>
+                    <ul class="info-list">
+                        <li>
+                            <span class="info-label">Duración:</span>
+                            <span class="info-value">1 día completo</span>
+                        </li>
+                        <li>
+                            <span class="info-label">Grupo máximo:</span>
+                            <span class="info-value">15 personas</span>
+                        </li>
+                        <li>
+                            <span class="info-label">Idiomas:</span>
+                            <span class="info-value">Español, Inglés</span>
+                        </li>
+                        <li>
+                            <span class="info-label">Incluye:</span>
+                            <span class="info-value">Transporte, almuerzo, guía</span>
+                        </li>
+                        <li>
+                            <span class="info-label">Edad mínima:</span>
+                            <span class="info-value">8 años</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <h3 class="info-title">📍 Punto de Encuentro</h3>
+                    <p style="margin-bottom: 1rem;">Parqueadero del Centro Comercial San Diego, Medellín</p>
+                    <button class="btn btn-outline" style="width: 100%;" onclick="openMap()">
+                        🗺️ Ver en Maps
+                    </button>
+                </div>
+
+                <div class="info-card">
+                    <h3 class="info-title">📞 Contacto</h3>
+                    <ul class="info-list">
+                        <li>
+                            <span class="info-label">WhatsApp:</span>
+                            <span class="info-value">+57 300 123 4567</span>
+                        </li>
+                        <li>
+                            <span class="info-label">Email:</span>
+                            <span class="info-value">tours@parchapp.com</span>
+                        </li>
+                        <li>
+                            <span class="info-label">Horario:</span>
+                            <span class="info-value">Lun-Dom: 6AM-10PM</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reviews Section -->
+        <div class="reviews-section">
+            <h2 class="section-title">🌟 Reseñas de Viajeros</h2>
+            
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="reviewer-info">
+                        <img src="https://media.istockphoto.com/id/1999831980/es/foto/beautiful-young-woman-taking-selfie-at-home.jpg?s=612x612&w=0&k=20&c=pMWIvhKa4LKlj_42tknYaItypT3R4rn9ooyRl6skMpI=" 
+                             alt="María González" class="reviewer-avatar">
+                        <div>
+                            <div class="reviewer-name">María González</div>
+                            <div class="review-date">15 Marzo, 2024</div>
+                        </div>
+                    </div>
+                    <div class="review-rating">⭐ 5.0</div>
+                </div>
+                <div class="review-content">
+                    "¡Experiencia increíble! Las vistas desde la Piedra del Peñol son impresionantes. 
+                    Nuestro guía Carlos fue muy conocedor y amable. Definitivamente repetiré."
+                </div>
+            </div>
+
+            <div class="review-card">
+                <div class="review-header">
+                    <div class="reviewer-info">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&w=100&h=100&fit=crop&crop=face" 
+                             alt="Carlos Rodríguez" class="reviewer-avatar">
+                        <div>
+                            <div class="reviewer-name">Carlos Rodríguez</div>
+                            <div class="review-date">8 Febrero, 2024</div>
+                        </div>
+                    </div>
+                    <div class="review-rating">⭐ 4.5</div>
+                </div>
+                <div class="review-content">
+                    "Muy buen tour, bien organizado. El almuerzo estaba delicioso y el paseo en lancha 
+                    fue relajante. Solo recomendaría llevar más agua para la subida."
+                </div>
+            </div>
+
+            <button class="btn btn-outline" style="width: 100%;" onclick="showAllReviews()">
+                Ver todas las 124 reseñas
+            </button>
+        </div>
+
+        <!-- Related Tours -->
+        <div class="related-tours">
+            <h2 class="section-title">🚀 Tours Relacionados</h2>
+            <div class="related-grid">
+                <div class="related-card" onclick="window.location.href='jardin.html'">
+                    <img src="https://visitarmedellin.com/wp-content/uploads/2024/05/Jardin-Antioquia.jpg" 
+                         alt="Jardín" class="related-image">
+                    <div class="related-content">
+                        <h3 class="related-title">Jardín - Pueblo Mágico</h3>
+                        <div class="related-price">$150.000</div>
+                    </div>
+                </div>
+                
+                <div class="related-card" onclick="window.location.href='santafe.html'">
+                    <img src="https://puebliandoporantioquia.com.co/wp-content/uploads/2019/07/Santa-Fe-de-Antioquia-a9.jpg" 
+                         alt="Santa Fe" class="related-image">
+                    <div class="related-content">
+                        <h3 class="related-title">Santa Fe de Antioquia</h3>
+                        <div class="related-price">$100.000</div>
+                    </div>
+                </div>
+                
+                <div class="related-card" onclick="window.location.href='rioclarotour.html'">
+                    <img src="https://www.viajescomfama.com/portals/1139/Images/rio-claro/viajescomfama-antioquia-viva-rio-claro.jpg" 
+                         alt="Río Claro" class="related-image">
+                    <div class="related-content">
+                        <h3 class="related-title">Río Claro - Aventura</h3>
+                        <div class="related-price">$180.000</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ParchApp</h3>
+                <p>Descubre las maravillas de Antioquia con nuestras experiencias únicas y tours personalizados.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Enlaces Rápidos</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="index.html#destinos">Destinos</a></li>
+                    <li><a href="historial.html">Mi Historial</a></li>
+                    <li><a href="index.html#contacto">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Legal</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Términos y Condiciones</a></li>
+                    <li><a href="#">Política de Privacidad</a></li>
+                    <li><a href="#">Cookies</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contacto</h3>
+                <ul class="footer-links">
+                    <li>Email: info@parchapp.com</li>
+                    <li>Teléfono: +57 300 123 4567</li>
+                    <li>Medellín, Antioquia</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2023 ParchApp. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="guatape.js"></script>
+</body>
+</html>

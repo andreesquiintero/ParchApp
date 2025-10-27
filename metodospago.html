@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pasarela de Pagos - ParchApp</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">Parch<span>App</span></div>
+            <ul class="nav-links">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="index.html#destinos">Destinos</a></li>
+                <li><a href="historial.html">Mi Historial</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+                <li class="cart-icon" onclick="window.open('carrito.html', '_blank')">
+                    <span>🛒</span>
+                    <span class="cart-count" id="cartCount">0</span>
+                </li>
+            </ul>
+            <div class="auth-buttons">
+                <button class="btn btn-login" onclick="window.open('login.html', '_blank')">Iniciar Sesión</button>
+                <button class="btn btn-register" onclick="window.open('registro.html', '_blank')">Registrarse</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Pasarela de Pagos</h1>
+            <p class="page-subtitle">Completa tu reserva de forma segura</p>
+        </div>
+        
+        <!-- Alert Container -->
+        <div id="alertContainer"></div>
+        
+        <div class="payment-container">
+            <!-- Payment Methods -->
+            <div class="payment-methods">
+                <h2 class="section-title">Métodos de Pago</h2>
+                
+                <!-- Credit Card Option -->
+                <div class="payment-option active" id="creditCardOption">
+                    <div class="d-flex align-items-center">
+                        <span class="payment-icon">💳</span>
+                        <div>
+                            <h4>Tarjeta de Crédito/Débito</h4>
+                            <p class="mb-0">Pago seguro con tarjeta</p>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-details active" id="creditCardDetails">
+                        <form id="creditCardForm">
+                            <div class="form-group">
+                                <label class="form-label" for="cardType">Tipo de Tarjeta</label>
+                                <select class="form-control" id="cardType" required>
+                                    <option value="">Seleccione una opción</option>
+                                    <option value="Visa">Visa</option>
+                                    <option value="Mastercard">Mastercard</option>
+                                    <option value="American Express">American Express</option>
+                                </select>
+                                <div class="error-message" id="cardTypeError">Selecciona un tipo de tarjeta</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="cardNumber">Número de Tarjeta</label>
+                                <input type="text" class="form-control" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                                <div class="error-message" id="cardNumberError">Ingresa un número de tarjeta válido</div>
+                            </div>
+                            
+                            <div class="card-input-group">
+                                <div class="form-group">
+                                    <label class="form-label" for="expiryDate">Fecha de Vencimiento</label>
+                                    <input type="month" class="form-control" id="expiryDate" required>
+                                    <div class="error-message" id="expiryDateError">Selecciona una fecha válida</div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="cvv">CVV</label>
+                                    <input type="text" class="form-control" id="cvv" placeholder="123" maxlength="4" required>
+                                    <div class="error-message" id="cvvError">Ingresa un CVV válido</div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="cardHolder">Nombre del Titular</label>
+                                <input type="text" class="form-control" id="cardHolder" placeholder="Como aparece en la tarjeta" required>
+                                <div class="error-message" id="cardHolderError">Ingresa el nombre del titular</div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Bank Payment Option -->
+                <div class="payment-option" id="bankPaymentOption">
+                    <div class="d-flex align-items-center">
+                        <span class="payment-icon">🏦</span>
+                        <div>
+                            <h4>Pago en Bancos</h4>
+                            <p class="mb-0">Paga en sucursales bancarias</p>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-details" id="bankPaymentDetails">
+                        <div class="form-group">
+                            <label class="form-label" for="bankPaymentSelect">Selecciona tu Banco</label>
+                            <select class="form-control" id="bankPaymentSelect">
+                                <option value="">Selecciona tu banco</option>
+                                <option value="Bancolombia">Bancolombia</option>
+                                <option value="Davivienda">Davivienda</option>
+                                <option value="BancoBogota">Banco de Bogotá</option>
+                                <option value="BancoPopular">Banco Popular</option>
+                            </select>
+                        </div>
+                        <p class="text-muted small">Recibirás un código de referencia para realizar el pago en cualquier sucursal del banco seleccionado.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <h2 class="section-title">Resumen de tu Orden</h2>
+                
+                <div class="order-items" id="orderItems">
+                    <!-- Los items se cargarán dinámicamente desde el carrito -->
+                </div>
+                
+                <div class="order-total">
+                    <span>Total a Pagar:</span>
+                    <span id="totalAmount">$0</span>
+                </div>
+                
+                <div class="payment-actions">
+                    <button class="btn btn-secondary" onclick="window.history.back()">Volver al Carrito</button>
+                    <button class="btn btn-primary" id="payButton">Proceder al Pago</button>
+                </div>
+                
+                <div class="mt-4">
+                    <p class="text-muted small">
+                        <span class="text-success">✓</span> Pago 100% seguro con encriptación SSL<br>
+                        <span class="text-success">✓</span> No almacenamos datos de tu tarjeta<br>
+                        <span class="text-success">✓</span> Garantía de reembolso según políticas
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer id="contacto">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ParchApp</h3>
+                <p>Descubre las maravillas de Antioquia con nuestras experiencias únicas y tours personalizados.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Enlaces Rápidos</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="index.html#destinos">Destinos</a></li>
+                    <li><a href="historial.html">Mi Historial</a></li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Legal</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Términos y Condiciones</a></li>
+                    <li><a href="#">Política de Privacidad</a></li>
+                    <li><a href="#">Cookies</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contacto</h3>
+                <ul class="footer-links">
+                    <li>Email: info@parchapp.com</li>
+                    <li>Teléfono: +57 300 123 4567</li>
+                    <li>Medellín, Antioquia</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2023 ParchApp. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="metodospago.js"></script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro - ParchApp</title>
+    <title>Restablecer Contraseña - ParchApp</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -20,54 +20,60 @@
         </nav>
     </header>
 
-    <!-- Main Content -->
     <main class="main-content">
-        <div class="registration-container">
-            <div class="registration-header">
-                <h1>Crear Cuenta</h1>
-                <p>Únete a ParchApp y descubre Antioquia</p>
-            </div>
-            
-            <!-- Alert Container -->
-            <div id="alertContainer"></div>
-            
-            <form id="registrationForm">
-                <div class="form-group">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" id="email" class="form-input" placeholder="tu@email.com" required>
-                    <div class="error-message" id="emailError">Por favor ingresa un email válido</div>
+        <div class="recovery-container">
+            <div class="recovery-card">
+                <!-- Logo -->
+                <div class="logo text-center">
+                    <h1>Parch<span>App</span></h1>
                 </div>
-                
-                <div class="form-group">
-                    <label for="password" class="form-label">Contraseña</label>
-                    <input type="password" id="password" class="form-input" placeholder="Mínimo 6 caracteres" required>
-                    <div class="error-message" id="passwordError">La contraseña debe tener al menos 6 caracteres</div>
+
+                <!-- Título y descripción -->
+                <div class="formRec-header">
+                    <h2>Restablecer Contraseña</h2>
+                    <p>Anota bien tus contraseñas :P</p>
                 </div>
-                
-                <div class="form-group">
-                    <label for="confirmPassword" class="form-label">Confirmar Contraseña</label>
-                    <input type="password" id="confirmPassword" class="form-input" placeholder="Repite tu contraseña" required>
-                    <div class="error-message" id="confirmPasswordError">Las contraseñas no coinciden</div>
+
+                <!-- Alert Container -->
+                <div id="alertContainer"></div>
+
+                <!-- Formulario -->
+                <form class="restablecimiento" id="resetForm">
+                    <div class="form-group">
+                        <label for="password1" class="form-label">NUEVA CONTRASEÑA</label>
+                        <input 
+                            type="password" 
+                            id="password1" 
+                            class="form-input"
+                            required 
+                            placeholder="Mínimo 6 caracteres"
+                        >
+                        <div class="error-message" id="password1Error">La contraseña debe tener al menos 6 caracteres</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password2" class="form-label">CONFIRMAR CONTRASEÑA</label>
+                        <input 
+                            type="password" 
+                            id="password2" 
+                            class="form-input"
+                            required 
+                            placeholder="Repite tu contraseña"
+                        >
+                        <div class="error-message" id="password2Error">Las contraseñas no coinciden</div>
+                    </div>
+
+                    <button type="submit" class="btn-primary">
+                        RESTABLECER CONTRASEÑA
+                    </button>
+                </form>
+
+                <div class="recovery-footer">
+                    <a href="login.html" class="back-link">← Volver al Inicio de Sesión</a>
                 </div>
-                
-                <div class="checkbox-group">
-                    <input type="checkbox" id="terms" class="checkbox-input" required>
-                    <label for="terms" class="checkbox-label">
-                        Acepto los <a href="#">Términos de Servicio</a> y la <a href="#">Política de Privacidad</a> de ParchApp
-                    </label>
-                </div>
-                <div class="error-message" id="termsError">Debes aceptar los términos y condiciones</div>
-                
-                <button type="submit" class="btn">Crear Cuenta</button>
-            </form>
-            
-            <div class="login-link">
-                ¿Ya tienes una cuenta? <a href="login.html">Inicia Sesión</a>
             </div>
         </div>
     </main>
 
-    <!-- Footer -->
     <footer>
         <div class="footer-content">
             <div class="footer-section">
@@ -105,6 +111,6 @@
         </div>
     </footer>
 
-    <script src="registro.js"></script>
+    <script src="restablecer.js"></script>
 </body>
 </html>

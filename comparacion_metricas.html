@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparación & Métricas - ParchApp Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="admin-header">
+        <div class="logo-container">
+            <div class="logo">Parch<span>App</span></div>
+        </div>
+        <div class="admin-nav">
+            <a href="admin.html" class="btn btn-secondary">← Volver al Dashboard</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1 class="section-title">Comparación & Métricas</h1>
+        
+        <!-- Comparador de Planes -->
+        <div class="module-section">
+            <h2>Comparador de Planes de Agencias</h2>
+            <div class="comparison-container">
+                <div class="comparison-select">
+                    <label for="agencyA">Agencia A</label>
+                    <select id="agencyA">
+                        <option value="">Selecciona una agencia</option>
+                        <option value="agency1">Aventura Extrema</option>
+                        <option value="agency2">Tours Colombia</option>
+                        <option value="agency3">Naturaleza Viva</option>
+                        <option value="agency4">EcoTours Antioquia</option>
+                    </select>
+                </div>
+                <div class="comparison-select">
+                    <label for="agencyB">Agencia B</label>
+                    <select id="agencyB">
+                        <option value="">Selecciona una agencia</option>
+                        <option value="agency1">Aventura Extrema</option>
+                        <option value="agency2">Tours Colombia</option>
+                        <option value="agency3">Naturaleza Viva</option>
+                        <option value="agency4">EcoTours Antioquia</option>
+                    </select>
+                </div>
+                <button id="compareBtn" class="btn btn-primary">Comparar</button>
+            </div>
+            
+            <div id="comparisonResult" class="comparison-result">
+                <!-- Resultados dinámicos -->
+            </div>
+        </div>
+
+        <!-- Métricas -->
+        <div class="module-section">
+            <h2>Métricas de Desempeño</h2>
+            <div class="metrics-container">
+                <div class="metric-card">
+                    <div class="metric-value" id="totalAgencies">0</div>
+                    <div class="metric-label">Agencias Activas</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="totalPlans">0</div>
+                    <div class="metric-label">Planes Publicados</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="reservationsToday">0</div>
+                    <div class="metric-label">Reservas Hoy</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="satisfactionRate">0%</div>
+                    <div class="metric-label">Tasa de Satisfacción</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="comparacion_metricas.js"></script>
+</body>
+</html>

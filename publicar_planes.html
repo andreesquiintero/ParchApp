@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParchApp - Panel de Administrador</title>
+    <!-- Google Fonts - Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- ============================================
+         HEADER
+         ============================================ -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <img src="images/logo.png" alt="logo ParchApp" class="logo-img">
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Ver Sitio Público</a></li>
+                <li><a href="admin.html">Administrador</a></li>
+                <li><a href="index.html">Salir</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- ============================================
+         CONTENEDOR PRINCIPAL
+         ============================================ -->
+    <div class="main-container">
+        <!-- ============================================
+             SECCIÓN: FORMULARIO DE PUBLICACIÓN
+             ============================================ -->
+        <div class="form-section">
+            <h2 class="section-title">Publicar Nuevo Plan Turístico</h2>
+            <p class="section-subtitle">Completa todos los campos para crear un nuevo plan</p>
+            
+            <form id="planForm">
+                <!-- Campo: Nombre del Plan -->
+                <div class="form-group">
+                    <label class="form-label" for="planName">
+                        Nombre del Plan <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="planName" 
+                        class="form-input" 
+                        placeholder="Ej: Tour por Guatapé"
+                    >
+                    <span class="error-message" id="errorName">El nombre es obligatorio</span>
+                </div>
+
+                <!-- Campo: Fecha del Tour -->
+                <div class="form-group">
+                    <label class="form-label" for="planDate">
+                        Fecha del Tour <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="date" 
+                        id="planDate" 
+                        class="form-input"
+                    >
+                    <span class="error-message" id="errorDate">La fecha debe ser actual o futura</span>
+                </div>
+
+                <!-- Campo: Valor -->
+                <div class="form-group">
+                    <label class="form-label" for="planPrice">
+                        Valor (COP) <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="number" 
+                        id="planPrice" 
+                        class="form-input" 
+                        placeholder="150000"
+                        min="0"
+                        step="1000"
+                    >
+                    <span class="error-message" id="errorPrice">El valor debe ser positivo</span>
+                </div>
+
+                <!-- Campo: Ubicación -->
+                <div class="form-group">
+                    <label class="form-label" for="planLocation">
+                        Ubicación <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="planLocation" 
+                        class="form-input" 
+                        placeholder="Ej: Guatapé, Antioquia"
+                    >
+                    <span class="error-message" id="errorLocation">La ubicación es obligatoria</span>
+                </div>
+
+                <!-- Campo: Categoría -->
+                <div class="form-group">
+                    <label class="form-label" for="planCategory">
+                        Categoría <span class="required">*</span>
+                    </label>
+                    <select id="planCategory" class="form-select">
+                        <option value="">Selecciona una categoría</option>
+                        <option value="playa">🏖️ Playa</option>
+                        <option value="montaña">⛰️ Montaña</option>
+                        <option value="ciudad">🏙️ Ciudad</option>
+                        <option value="aventura">🎢 Aventura</option>
+                        <option value="cultural">🎭 Cultural</option>
+                    </select>
+                    <span class="error-message" id="errorCategory">Debes seleccionar una categoría</span>
+                </div>
+
+                <!-- Campo: URL de Imagen -->
+                <div class="form-group">
+                    <label class="form-label" for="planImage">
+                        URL de Imagen de Fondo <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="url" 
+                        id="planImage" 
+                        class="form-input" 
+                        placeholder="https://ejemplo.com/imagen.jpg"
+                    >
+                    <span class="error-message" id="errorImage">Ingresa una URL válida</span>
+                </div>
+
+                <!-- Campo: Descripción -->
+                <div class="form-group">
+                    <label class="form-label" for="planDescription">
+                        Descripción <span class="required">*</span>
+                    </label>
+                    <textarea 
+                        id="planDescription" 
+                        class="form-textarea" 
+                        placeholder="Describe el plan turístico en detalle..."
+                    ></textarea>
+                    <span class="error-message" id="errorDescription">La descripción es obligatoria</span>
+                </div>
+
+                <!-- Botón de Envío -->
+                <button type="submit" class="btn-submit">
+                    Publicar Plan
+                </button>
+            </form>
+        </div>
+
+        <!-- ============================================
+             SECCIÓN: CATÁLOGO DE PLANES PUBLICADOS
+             ============================================ -->
+        <div class="catalog-section">
+            <h2 class="section-title">Planes Publicados</h2>
+            <p class="section-subtitle">Lista de todos los planes turísticos activos</p>
+            
+            <div class="plans-grid" id="plansGrid">
+                <!-- Estado vacío inicial -->
+                <div class="empty-state" id="emptyState">
+                    <div class="empty-state-icon">📋</div>
+                    <p>No hay planes publicados aún</p>
+                    <p style="font-size: 0.9rem; margin-top: 0.5rem;">Crea tu primer plan usando el formulario</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         MODAL DE ÉXITO
+         ============================================ -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-icon">✅</div>
+            <h3 class="modal-title">¡Plan Guardado!</h3>
+            <p class="modal-message">El plan turístico se ha publicado exitosamente</p>
+            <button class="modal-btn" id="closeModal">Aceptar</button>
+        </div>
+    </div>
+
+    <script src="publicar_planes.js"></script>
+</body>
+</html>

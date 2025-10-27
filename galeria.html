@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galería de Experiencias - ParchApp</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">Parch<span>App</span></div>
+            <ul class="nav-links">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="index.html#destinos">Destinos</a></li>
+                <li><a href="galeria.html">Experiencias</a></li>
+                <li><a href="historial.html">Mi Historial</a></li>
+                <li><a href="index.html#contacto">Contacto</a></li>
+                <li class="cart-icon" onclick="window.open('carrito.html', '_blank')">
+                    <span>🛒</span>
+                    <span class="cart-count" id="cartCount">0</span>
+                </li>
+            </ul>
+            <div class="auth-buttons">
+                <button class="btn btn-login" onclick="window.open('login.html', '_blank')">Iniciar Sesión</button>
+                <button class="btn btn-register" onclick="window.open('registro.html', '_blank')">Registrarse</button>
+            </div>
+        </nav>
+    </header>
+
+    <div class="galeria-header">
+        <h1 class="page-title">BIENVENIDO A NUESTRA GALERÍA DE EXPERIENCIAS</h1>
+        <h2 class="galeria-subtitle">Aquí puedes subir las fotos que hayas tomado en tus tours o planes para mostrarles a otros cómo te fue</h2>
+    </div>
+
+    <div class="form-container">
+        <form id="uploadForm" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="location">¿A dónde fuiste?</label>
+                <select id="location" name="location" required>
+                    <option value="">--Selecciona un destino--</option>
+                    <option value="medellin">Medellín</option>
+                    <option value="guatape">Guatapé</option>
+                    <option value="santuario">Santuario</option>
+                    <option value="jardin">Jardín</option>
+                    <option value="santa-fe">Santa Fe de Antioquia</option>
+                    <option value="parque-arvi">Parque Arví</option>
+                    <option value="rio-claro">Río Claro</option>
+                    <option value="san-jeronimo">San Jerónimo</option>
+                    <option value="cerro-tusa">Cerro Tusa</option>
+                    <option value="otros">Otros</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Cuéntanos cómo te fue</label>
+                <textarea name="description" id="description" rows="5" placeholder="Escribe cómo fue tu experiencia, qué te gustó más, recomendaciones..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="photo">Selecciona la foto para subir:</label>
+                <div class="file-input-wrapper">
+                    <input type="file" id="photo" name="photo" accept="image/*" required>
+                    <div class="file-input-text">
+                        <span>📷 Haz clic aquí o arrastra una imagen</span>
+                        <span class="file-name" id="fileName">No se ha seleccionado ningún archivo</span>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="uploadBtn">Subir Foto</button>
+        </form>
+    </div>
+
+    <div class="gallery-container">
+        <h2 class="section-title">Galería de Experiencias Compartidas</h2>
+        <div class="gallery-filters">
+            <button class="filter-btn active" data-filter="all">Todas</button>
+            <button class="filter-btn" data-filter="medellin">Medellín</button>
+            <button class="filter-btn" data-filter="guatape">Guatapé</button>
+            <button class="filter-btn" data-filter="jardin">Jardín</button>
+            <button class="filter-btn" data-filter="santa-fe">Santa Fe</button>
+            <button class="filter-btn" data-filter="parque-arvi">Parque Arví</button>
+        </div>
+        <div class="gallery-grid" id="galleryGrid">
+            <!-- Las experiencias se cargarán aquí dinámicamente -->
+        </div>
+    </div>
+
+    <footer id="contacto">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>ParchApp</h3>
+                <p>Descubre las maravillas de Antioquia con nuestras experiencias únicas y tours personalizados.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Enlaces Rápidos</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="index.html#destinos">Destinos</a></li>
+                    <li><a href="galeria.html">Experiencias</a></li>
+                    <li><a href="index.html#contacto">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Legal</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Términos y Condiciones</a></li>
+                    <li><a href="#">Política de Privacidad</a></li>
+                    <li><a href="#">Cookies</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contacto</h3>
+                <ul class="footer-links">
+                    <li>Email: info@parchapp.com</li>
+                    <li>Teléfono: +57 300 123 4567</li>
+                    <li>Medellín, Antioquia</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2023 ParchApp. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="galeria.js"></script>
+</body>
+</html>
